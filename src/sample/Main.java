@@ -35,6 +35,8 @@ public class Main extends Application {
         }
     }
 
+
+
     public void showLoginScreen() {
 
         Stage stage = new Stage();
@@ -44,7 +46,7 @@ public class Main extends Application {
 
         stage.setResizable(false);
 
-        Label label = new Label("Input data.");
+        Label label = new Label("Input below data!");
         Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
         label.setFont(font);
         label.setTextFill(Color.RED);
@@ -52,8 +54,13 @@ public class Main extends Application {
 
         TextField userName = new TextField();
         userName.setPromptText("Input your name: ");
-        TextField numberOfRounds = new TextField();
-        numberOfRounds.setPromptText("Input number of rounds: ");
+        //TextField numberOfRounds = new TextField();
+
+//        NumberTextField numberOfRounds = new NumberTextField();
+
+        NumberSpinner numberOfRounds = new NumberSpinner();
+
+//        numberOfRounds.setPromptText("Input number of rounds: ");
 
         Button btnPlayGame = new Button();
         //btnPlayGame.setText("Play");
@@ -63,19 +70,23 @@ public class Main extends Application {
         imageViewIconPlayGame.setFitWidth(50);
         btnPlayGame.setGraphic(imageViewIconPlayGame);
 
-        EventHandler<MouseEvent> eventHandlerLogin2 = new EventHandler<MouseEvent>() {
+        EventHandler<MouseEvent> eventHandlerPlayGame = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    stage.close();
-                    playGame();
-                } catch(Exception ex) {
+                    if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 ) {
+                        stage.close();
+                        playGame(userName.getText(), numberOfRounds.getNumber().intValue());
+                    } else {
+                        System.out.println("fdsghs");
+                    }
+                } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
             }
         };
 
-        btnPlayGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerLogin2);
+        btnPlayGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGame);
 
         VBox box = new VBox();
         box.setPadding(new Insets(10));
@@ -99,7 +110,7 @@ public class Main extends Application {
 
 
 
-    public void playGame() {
+    public void playGame(String userName, int numberOfRoundsWin) {
 
         Stage primaryStage = new Stage();
 
@@ -216,6 +227,66 @@ public class Main extends Application {
         HBox hboxRect = new HBox(imageViewIcon);
         hboxRect.setPadding(new Insets(100, 0, 0, 130));
 
+
+        PlayerHuman pH = new PlayerHuman();
+        PlayerComputer pC = new PlayerComputer();
+
+
+        int numberOfRoundsHuman = 0;
+        int numberOfRoundsComputer = 0;
+        boolean end = false;
+        String resultRulesGame;
+        int movePlayerComputer = 0;
+        int movePlayerHuman = 0;
+
+        while (!end) {
+            System.out.print("Execute move: \t");
+            movePlayerHuman  = pH.executeMove( numberOfRoundsWin );
+
+            movePlayerComputer = pC.executeMove();
+            System.out.print("Executed move of computer: \t" + movePlayerComputer);
+
+            resultRulesGame = rulesGame(movePlayerHuman, movePlayerComputer);
+
+            if ( resultRulesGame.equals("Human") ) {
+                numberOfRoundsHuman++;
+            } else if ( resultRulesGame.equals("Computer") ) {
+                numberOfRoundsComputer++;
+            }
+
+            displayResults(resultRulesGame, numberOfRoundsHuman, numberOfRoundsComputer, movePlayerHuman, movePlayerComputer, userName);
+
+            if( numberOfRoundsHuman == numberOfRoundsWin ) {
+                end = true;
+                System.out.println("Player-"+userName+" win game!");
+                System.out.println("Do you want to play again?\nPress key Y/y or if you return to game press other key!");
+/*                char keyY = chooseMove.next().charAt(0);
+                if( (keyY == 'Y') || (keyY == 'y') ) {
+                    RpsRunner rr = new RpsRunner();
+                    String[] arg = new String[100];
+                    rr.main(arg);
+                } else {
+                    System.exit(0);
+                }                   */
+            } else if( numberOfRoundsComputer == numberOfRoundsWin ) {
+                end = true;
+                System.out.println("Player-Computer win game!");
+                System.out.println("Do you want to play again?\nPress key Y/y or if you return to game press other key!");
+/*                char keyY = chooseMove.next().charAt(0);
+                if( (keyY == 'Y') || (keyY == 'y') ) {
+                    RpsRunner rr = new RpsRunner();
+                    String[] arg = new String[100];
+                    rr.main(arg);
+                } else {
+                    System.exit(0);
+                }                   */
+            }
+        }
+
+
+
+
+
         root.getChildren().add(hboxRect);
         root.getChildren().add(hboxPlayerComputer);
         root.getChildren().add(hboxPlayerPerson);
@@ -228,6 +299,40 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    public String rulesGame(int movePlayerHuman, int movePlayerComputer) {
+        String resultOfRound = "";
+
+        if( movePlayerHuman == 1 && movePlayerComputer == 2 ) {
+            resultOfRound = "Computer";
+        } else if( movePlayerHuman == 2 && movePlayerComputer == 1 ) {
+            resultOfRound = "Human";
+        } else if( movePlayerHuman == 1 && movePlayerComputer == 3 ) {
+            resultOfRound = "Human";
+        } else if( movePlayerHuman == 3 && movePlayerComputer == 1 ) {
+            resultOfRound = "Computer";
+        } else if( movePlayerHuman == 2 && movePlayerComputer == 3 ) {
+            resultOfRound = "Computer";
+        } else if( movePlayerHuman == 3 && movePlayerComputer == 2 ) {
+            resultOfRound = "Human";
+        } else {
+            resultOfRound = "";
+        }
+        return resultOfRound;
+    }
+
+    public void displayResults(String winner, int resultPlayerHuman, int resultPlayerComputer, int movePlayerHuman, int movePlayerComputer, String UserName) {
+        System.out.println("\n\n\nExecute moves players:");
+        System.out.println("Executed move " + UserName + " -> " + movePlayerHuman);
+        System.out.println("Execute move Computer -> " + movePlayerComputer);
+
+        if( resultPlayerHuman != resultPlayerComputer ) {
+            System.out.println("This round win -> " + winner);
+        } else {
+            System.out.println("There was a draw this round!");
+        }
+        System.out.println("Currently result game : \nPlayer-" + UserName + " -> " + resultPlayerHuman + "\tPlayer-Computer -> " + resultPlayerComputer + "\n\n\n");
     }
 
     public static void main(String[] args) {
