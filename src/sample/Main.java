@@ -28,7 +28,12 @@ public class Main extends Application {
 
         try {
 
-            showLoginScreen();
+//            do {
+
+            playGame("Adam", 2);
+
+//            } while( !end );
+            //showLoginScreen();
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -108,22 +113,27 @@ public class Main extends Application {
 
     }
 
-
+    int executedMovePlayer = 0;
+    int numberOfRoundsHuman = 0;
+    int numberOfRoundsComputer = 0;
+    int executedMoveComputer = 0;
 
     public void playGame(String userName, int numberOfRoundsWin) {
 
         Stage primaryStage = new Stage();
 
-        Image imageIconPlayerComputer = new Image( getClass().getResourceAsStream("\\icons\\Player-Computer.png") );
+        primaryStage.setResizable(false);
+
+        Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
         imageViewIconPlayerComputer.setFitHeight(150);
         imageViewIconPlayerComputer.setFitWidth(150);
         imageViewIconPlayerComputer.setLayoutX(200);
         imageViewIconPlayerComputer.setLayoutY(50);
         HBox hboxPlayerComputer = new HBox(imageViewIconPlayerComputer);
-        hboxPlayerComputer.setPadding(new Insets(15, 0, 0, 530));
+        hboxPlayerComputer.setPadding(new Insets(15, 0, 0, 830));
 
-        Image imageIconPlayerPerson = new Image( getClass().getResourceAsStream("\\icons\\Player-Person.png") );
+        Image imageIconPlayerPerson = new Image(getClass().getResourceAsStream("\\icons\\Player-Person.png"));
         ImageView imageViewIconPlayerPerson = new ImageView(imageIconPlayerPerson);
         imageViewIconPlayerPerson.setFitHeight(150);
         imageViewIconPlayerPerson.setFitWidth(100);
@@ -132,17 +142,33 @@ public class Main extends Application {
         HBox hboxPlayerPerson = new HBox(imageViewIconPlayerPerson);
         hboxPlayerPerson.setPadding(new Insets(15, 0, 0, 20));
 
+        Label labelUserName = new Label();
+        labelUserName.setText(userName);
+        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
+        labelUserName.setFont(font);
+        labelUserName.setTextFill(Color.RED);
+        labelUserName.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        HBox hboxlabelUserName = new HBox(labelUserName);
+        hboxlabelUserName.setPadding(new Insets(180, 0, 0, 50));
+
+        Label labelComputer = new Label();
+        labelComputer.setText("Computer");
+        labelComputer.setFont(font);
+        labelComputer.setTextFill(Color.RED);
+        labelComputer.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        HBox hboxlabelComputer = new HBox(labelComputer);
+        hboxlabelComputer.setPadding(new Insets(180, 0, 0, 870));
+
         Label infoMovesUser = new Label();
         infoMovesUser.setText("Below are three moves. Click one from them!");
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
         infoMovesUser.setFont(font);
         infoMovesUser.setTextFill(Color.RED);
         infoMovesUser.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         HBox hboxInfoMovesUser = new HBox(infoMovesUser);
-        hboxInfoMovesUser.setPadding(new Insets(330, 0, 0, 10));
+        hboxInfoMovesUser.setPadding(new Insets(520, 0, 0, 40));
 
         Button btnPaper = new Button();
-        Image imageIconPaper = new Image( getClass().getResourceAsStream("\\icons\\paper.png") );
+        Image imageIconPaper = new Image(getClass().getResourceAsStream("\\icons\\paper.png"));
         ImageView imageViewIconPaper = new ImageView(imageIconPaper);
         btnPaper.setGraphic(imageViewIconPaper);
         imageViewIconPaper.setFitHeight(100);
@@ -150,152 +176,182 @@ public class Main extends Application {
 
         StackPane root = new StackPane();
 
-        Image imageIcon = new Image( getClass().getResourceAsStream("") );
-        ImageView imageViewIcon = new ImageView(imageIcon);
-        imageViewIcon.setFitWidth(200);
-        imageViewIcon.setFitHeight(200);
+        Image imageIconMovePlayer = new Image(getClass().getResourceAsStream(""));
+        ImageView imageViewIconMovePlayer = new ImageView(imageIconMovePlayer);
+        imageViewIconMovePlayer.setFitWidth(300);
+        imageViewIconMovePlayer.setFitHeight(300);
 
-        EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    Image imagePaper = new Image( getClass().getResourceAsStream("\\icons\\paper.png") );
-                    ImageView imageViewPaper = new ImageView(imagePaper);
-                    imageViewPaper.setFitHeight(200);
-                    imageViewPaper.setFitWidth(200);
-                    imageViewIcon.setImage(imagePaper);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-
-        btnPaper.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPaper);
+        Image imageIconMoveComputer = new Image(getClass().getResourceAsStream(""));
+        ImageView imageViewIconMoveComputer = new ImageView(imageIconMoveComputer);
+        imageViewIconMoveComputer.setFitWidth(300);
+        imageViewIconMoveComputer.setFitHeight(300);
 
         Button btnRock = new Button();
-        Image imageIconRock = new Image( getClass().getResourceAsStream("\\icons\\rock.png") );
+        Image imageIconRock = new Image(getClass().getResourceAsStream("\\icons\\rock.png"));
         ImageView imageViewIconRock = new ImageView(imageIconRock);
         btnRock.setGraphic(imageViewIconRock);
         imageViewIconRock.setFitHeight(100);
         imageViewIconRock.setFitWidth(100);
 
-        EventHandler<MouseEvent> eventHandlerRock = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    Image imageRock = new Image( getClass().getResourceAsStream("\\icons\\rock.png") );
-                    ImageView imageViewRock = new ImageView(imageRock);
-                    imageViewRock.setFitHeight(200);
-                    imageViewRock.setFitWidth(200);
-                    imageViewIcon.setImage(imageRock);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-
-        btnRock.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerRock);
-
         Button btnScissors = new Button();
-        Image imageIconScissors = new Image( getClass().getResourceAsStream("\\icons\\scissors.jpg") );
+        Image imageIconScissors = new Image(getClass().getResourceAsStream("\\icons\\scissors.jpg"));
         ImageView imageViewIconScissors = new ImageView(imageIconScissors);
         btnScissors.setGraphic(imageViewIconScissors);
         imageViewIconScissors.setFitHeight(100);
         imageViewIconScissors.setFitWidth(100);
 
-        EventHandler<MouseEvent> eventHandlerScissors = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    Image imageScissors = new Image( getClass().getResourceAsStream("\\icons\\scissors.jpg") );
-                    ImageView imageViewScissors = new ImageView(imageScissors);
-                    imageViewScissors.setFitHeight(200);
-                    imageViewScissors.setFitWidth(200);
-                    imageViewIcon.setImage(imageScissors);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
 
-        btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
+
+        PlayerComputer pC = new PlayerComputer();
+        boolean end = false;
+        String winnerGame = "";
+
+        int resultGlobalExecutedMovePlayer = 0;
+        int resultTotalNumberOfRoundsHuman = 0;
+        int resultTotalNumberOfRoundsComputer = 0;
+
+
+
+            EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+/*                    int executedMovePlayer = 0;
+                    int numberOfRoundsHuman = 0;
+                    int numberOfRoundsComputer = 0;             */
+
+                    executedMoveComputer = pC.executeMove();
+
+                    try {
+                        imageViewIconMovePlayer.setImage(imageIconPaper);
+                        executedMovePlayer = 2;
+                        if (executedMoveComputer == 1) {
+                            imageViewIconMoveComputer.setImage(imageIconRock);
+                            numberOfRoundsHuman++;
+                        } else if (executedMoveComputer == 2) {
+                            imageViewIconMoveComputer.setImage(imageIconPaper);
+                        } else if (executedMoveComputer == 3) {
+                            imageViewIconMoveComputer.setImage(imageIconScissors);
+                            numberOfRoundsComputer++;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
+                }
+            };
+
+            EventHandler<MouseEvent> eventHandlerRock = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+/*                    int executedMovePlayer = 0;
+                    int numberOfRoundsHuman = 0;
+                    int numberOfRoundsComputer = 0;                     */
+
+                    executedMoveComputer = pC.executeMove();
+
+                    try {
+                        imageViewIconMovePlayer.setImage(imageIconRock);
+                        executedMovePlayer = 1;
+                        if (executedMoveComputer == 1) {
+                            imageViewIconMoveComputer.setImage(imageIconRock);
+                        } else if (executedMoveComputer == 2) {
+                            imageViewIconMoveComputer.setImage(imageIconPaper);
+                            numberOfRoundsComputer++;
+                        } else if (executedMoveComputer == 3) {
+                            imageViewIconMoveComputer.setImage(imageIconScissors);
+                            numberOfRoundsHuman++;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
+                }
+            };
+
+            EventHandler<MouseEvent> eventHandlerScissors = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+/*                    int executedMovePlayer = 0;
+                    int numberOfRoundsHuman = 0;
+                    int numberOfRoundsComputer = 0;                 */
+
+                    executedMoveComputer = pC.executeMove();
+
+                    try {
+                        imageViewIconMovePlayer.setImage(imageIconScissors);
+                        executedMovePlayer = 3;
+                        if (executedMoveComputer == 1) {
+                            imageViewIconMoveComputer.setImage(imageIconRock);
+                            numberOfRoundsComputer++;
+                        } else if (executedMoveComputer == 2) {
+                            imageViewIconMoveComputer.setImage(imageIconPaper);
+                            numberOfRoundsHuman++;
+                        } else if (executedMoveComputer == 3) {
+                            imageViewIconMoveComputer.setImage(imageIconScissors);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
+                }
+            };
+
+
+            btnPaper.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPaper);
+            btnRock.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerRock);
+            btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
+
+
+//        while( !end ) {
+
+            resultGlobalExecutedMovePlayer = returnGlobalExecutedMovePlayer();
+            resultTotalNumberOfRoundsHuman = returnTotalNumberOfRoundsHuman();
+            resultTotalNumberOfRoundsComputer = returnTotalNumberOfRoundsComputer();
+
+            if (resultTotalNumberOfRoundsHuman == numberOfRoundsWin) {
+                end = true;
+                winnerGame = userName;
+            } else if (resultTotalNumberOfRoundsComputer == numberOfRoundsWin) {
+                end = true;
+                winnerGame = "Computer";
+            }
+            //displayResults(winnerGame, resultTotalNumberOfRoundsHuman, resultTotalNumberOfRoundsComputer, resultGlobalExecutedMovePlayer, executedMoveComputer, userName);
+
+//        }
+
 
         HBox hboxbuttons = new HBox(btnPaper, btnRock, btnScissors);
         hboxbuttons.setSpacing(5);
-        hboxbuttons.setPadding(new Insets(350, 0, 0, 10));
+        hboxbuttons.setPadding(new Insets(550, 0, 0, 30));
 
-        HBox hboxRect = new HBox(imageViewIcon);
-        hboxRect.setPadding(new Insets(100, 0, 0, 130));
-
-
-        PlayerHuman pH = new PlayerHuman();
-        PlayerComputer pC = new PlayerComputer();
+        HBox hboxRect = new HBox(imageViewIconMovePlayer, imageViewIconMoveComputer);
+        hboxRect.setPadding(new Insets(175, 0, 0, 150));
+        hboxRect.setSpacing(50);
 
 
-        int numberOfRoundsHuman = 0;
-        int numberOfRoundsComputer = 0;
-        boolean end = false;
-        String resultRulesGame;
-        int movePlayerComputer = 0;
-        int movePlayerHuman = 0;
-
-        while (!end) {
-            System.out.print("Execute move: \t");
-            movePlayerHuman  = pH.executeMove( numberOfRoundsWin );
-
-            movePlayerComputer = pC.executeMove();
-            System.out.print("Executed move of computer: \t" + movePlayerComputer);
-
-            resultRulesGame = rulesGame(movePlayerHuman, movePlayerComputer);
-
-            if ( resultRulesGame.equals("Human") ) {
-                numberOfRoundsHuman++;
-            } else if ( resultRulesGame.equals("Computer") ) {
-                numberOfRoundsComputer++;
-            }
-
-            displayResults(resultRulesGame, numberOfRoundsHuman, numberOfRoundsComputer, movePlayerHuman, movePlayerComputer, userName);
-
-            if( numberOfRoundsHuman == numberOfRoundsWin ) {
-                end = true;
-                System.out.println("Player-"+userName+" win game!");
-                System.out.println("Do you want to play again?\nPress key Y/y or if you return to game press other key!");
-/*                char keyY = chooseMove.next().charAt(0);
-                if( (keyY == 'Y') || (keyY == 'y') ) {
-                    RpsRunner rr = new RpsRunner();
-                    String[] arg = new String[100];
-                    rr.main(arg);
-                } else {
-                    System.exit(0);
-                }                   */
-            } else if( numberOfRoundsComputer == numberOfRoundsWin ) {
-                end = true;
-                System.out.println("Player-Computer win game!");
-                System.out.println("Do you want to play again?\nPress key Y/y or if you return to game press other key!");
-/*                char keyY = chooseMove.next().charAt(0);
-                if( (keyY == 'Y') || (keyY == 'y') ) {
-                    RpsRunner rr = new RpsRunner();
-                    String[] arg = new String[100];
-                    rr.main(arg);
-                } else {
-                    System.exit(0);
-                }                   */
-            }
-        }
-
-
-
+        Label currentResultsGame = new Label();
+        currentResultsGame.setText("Currently results game:");
+        currentResultsGame.setFont(font);
+        currentResultsGame.setTextFill(Color.RED);
+        currentResultsGame.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        HBox hboxCurrentResultsGame = new HBox(currentResultsGame);
+        hboxCurrentResultsGame.setPadding(new Insets(520, 0, 0, 500));
 
 
         root.getChildren().add(hboxRect);
         root.getChildren().add(hboxPlayerComputer);
         root.getChildren().add(hboxPlayerPerson);
         root.getChildren().add(hboxInfoMovesUser);
+        root.getChildren().add(hboxlabelUserName);
+        root.getChildren().add(hboxlabelComputer);
         root.getChildren().add(hboxbuttons);
 
         root.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
 
-        Scene scene = new Scene(root,700,700);
+        Scene scene = new Scene(root,1000,700);
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -333,6 +389,28 @@ public class Main extends Application {
             System.out.println("There was a draw this round!");
         }
         System.out.println("Currently result game : \nPlayer-" + UserName + " -> " + resultPlayerHuman + "\tPlayer-Computer -> " + resultPlayerComputer + "\n\n\n");
+    }
+
+    int globalExecutedMovePlayer = 0;
+    int totalNumberOfRoundsHuman = 0;
+    int totalNumberOfRoundsComputer = 0;
+
+    public void SaveResults(int executedMovePlayer, int numberOfRoundsHuman, int numberOfRoundsComputer) {
+        globalExecutedMovePlayer = executedMovePlayer;
+        totalNumberOfRoundsHuman += numberOfRoundsHuman;
+        totalNumberOfRoundsComputer += numberOfRoundsComputer;
+    }
+
+    public int returnGlobalExecutedMovePlayer() {
+        return globalExecutedMovePlayer;
+    }
+
+    public int returnTotalNumberOfRoundsHuman() {
+        return totalNumberOfRoundsHuman;
+    }
+
+    public int returnTotalNumberOfRoundsComputer() {
+        return totalNumberOfRoundsComputer;
     }
 
     public static void main(String[] args) {
