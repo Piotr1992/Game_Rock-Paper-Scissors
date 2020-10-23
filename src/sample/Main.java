@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-
+import javafx.stage.StageStyle;
 
 
 public class Main extends Application {
@@ -50,6 +50,8 @@ public class Main extends Application {
         root.setAlignment(Pos.CENTER);
 
         stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
+
 
         Label label = new Label("Input below data!");
         Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
@@ -113,16 +115,31 @@ public class Main extends Application {
 
     }
 
+
+
     int executedMovePlayer = 0;
-    int numberOfRoundsHuman = 0;
-    int numberOfRoundsComputer = 0;
+    int resultPlayerHuman = 0;
+    int resultPlayerComputer = 0;
     int executedMoveComputer = 0;
+
+    PlayerComputer pC = new PlayerComputer();
+    boolean end = false;
+    String winnerGame = "";
+
+    int resultGlobalExecutedMovePlayer = 0;
+    int resultTotalNumberOfRoundsHuman = 0;
+    int resultTotalNumberOfRoundsComputer = 0;
+
+    String winnerRound = "";
+
+
 
     public void playGame(String userName, int numberOfRoundsWin) {
 
         Stage primaryStage = new Stage();
 
         primaryStage.setResizable(false);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
@@ -174,8 +191,6 @@ public class Main extends Application {
         imageViewIconPaper.setFitHeight(100);
         imageViewIconPaper.setFitWidth(100);
 
-        StackPane root = new StackPane();
-
         Image imageIconMovePlayer = new Image(getClass().getResourceAsStream(""));
         ImageView imageViewIconMovePlayer = new ImageView(imageIconMovePlayer);
         imageViewIconMovePlayer.setFitWidth(300);
@@ -200,146 +215,234 @@ public class Main extends Application {
         imageViewIconScissors.setFitHeight(100);
         imageViewIconScissors.setFitWidth(100);
 
+        Button btnCloseWindow = new Button();
+        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
+        ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
+        btnCloseWindow.setGraphic(imageViewIconCloseWindow);
+        imageViewIconCloseWindow.setFitHeight(50);
+        imageViewIconCloseWindow.setFitWidth(50);
 
+        Button btnPlayGameAgain = new Button();
+        Image imageIconPlayGame = new Image(getClass().getResourceAsStream("\\icons\\play_again_button.png"));
+        ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
+        btnPlayGameAgain.setGraphic(imageViewIconPlayGame);
+        imageViewIconPlayGame.setFitHeight(50);
+        imageViewIconPlayGame.setFitWidth(150);
 
-        PlayerComputer pC = new PlayerComputer();
-        boolean end = false;
-        String winnerGame = "";
+        Label currentResultsGame = new Label();
 
-        int resultGlobalExecutedMovePlayer = 0;
-        int resultTotalNumberOfRoundsHuman = 0;
-        int resultTotalNumberOfRoundsComputer = 0;
+        EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
 
+                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;
 
+                executedMoveComputer = pC.executeMove();
 
-            EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-/*                    int executedMovePlayer = 0;
-                    int numberOfRoundsHuman = 0;
-                    int numberOfRoundsComputer = 0;             */
-
-                    executedMoveComputer = pC.executeMove();
-
-                    try {
-                        imageViewIconMovePlayer.setImage(imageIconPaper);
-                        executedMovePlayer = 2;
-                        if (executedMoveComputer == 1) {
-                            imageViewIconMoveComputer.setImage(imageIconRock);
-                            numberOfRoundsHuman++;
-                        } else if (executedMoveComputer == 2) {
-                            imageViewIconMoveComputer.setImage(imageIconPaper);
-                        } else if (executedMoveComputer == 3) {
-                            imageViewIconMoveComputer.setImage(imageIconScissors);
-                            numberOfRoundsComputer++;
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                try {
+                    imageViewIconMovePlayer.setImage(imageIconPaper);
+                    executedMovePlayer = 2;
+                    if (executedMoveComputer == 1) {
+                        imageViewIconMoveComputer.setImage(imageIconRock);
+                        resultPlayerHuman++;
+                        winnerRound = userName;
+                    } else if (executedMoveComputer == 2) {
+                        imageViewIconMoveComputer.setImage(imageIconPaper);
+                        winnerRound = "";
+                    } else if (executedMoveComputer == 3) {
+                        imageViewIconMoveComputer.setImage(imageIconScissors);
+                        resultPlayerComputer++;
+                        winnerRound = "Computer";
                     }
-
-                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            };
 
-            EventHandler<MouseEvent> eventHandlerRock = new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-/*                    int executedMovePlayer = 0;
-                    int numberOfRoundsHuman = 0;
-                    int numberOfRoundsComputer = 0;                     */
+                SaveResults(resultPlayerHuman, resultPlayerComputer);
 
-                    executedMoveComputer = pC.executeMove();
+                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
 
-                    try {
-                        imageViewIconMovePlayer.setImage(imageIconRock);
-                        executedMovePlayer = 1;
-                        if (executedMoveComputer == 1) {
-                            imageViewIconMoveComputer.setImage(imageIconRock);
-                        } else if (executedMoveComputer == 2) {
-                            imageViewIconMoveComputer.setImage(imageIconPaper);
-                            numberOfRoundsComputer++;
-                        } else if (executedMoveComputer == 3) {
-                            imageViewIconMoveComputer.setImage(imageIconScissors);
-                            numberOfRoundsHuman++;
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
 
-                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
+                currentResultsGame.setText("Current result game:\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+
+                if( resultPlayerHuman == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
+                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
                 }
-            };
-
-            EventHandler<MouseEvent> eventHandlerScissors = new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-/*                    int executedMovePlayer = 0;
-                    int numberOfRoundsHuman = 0;
-                    int numberOfRoundsComputer = 0;                 */
-
-                    executedMoveComputer = pC.executeMove();
-
-                    try {
-                        imageViewIconMovePlayer.setImage(imageIconScissors);
-                        executedMovePlayer = 3;
-                        if (executedMoveComputer == 1) {
-                            imageViewIconMoveComputer.setImage(imageIconRock);
-                            numberOfRoundsComputer++;
-                        } else if (executedMoveComputer == 2) {
-                            imageViewIconMoveComputer.setImage(imageIconPaper);
-                            numberOfRoundsHuman++;
-                        } else if (executedMoveComputer == 3) {
-                            imageViewIconMoveComputer.setImage(imageIconScissors);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                    SaveResults(executedMovePlayer, numberOfRoundsHuman, numberOfRoundsComputer);
-                }
-            };
-
-
-            btnPaper.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPaper);
-            btnRock.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerRock);
-            btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
-
-
-//        while( !end ) {
-
-            resultGlobalExecutedMovePlayer = returnGlobalExecutedMovePlayer();
-            resultTotalNumberOfRoundsHuman = returnTotalNumberOfRoundsHuman();
-            resultTotalNumberOfRoundsComputer = returnTotalNumberOfRoundsComputer();
-
-            if (resultTotalNumberOfRoundsHuman == numberOfRoundsWin) {
-                end = true;
-                winnerGame = userName;
-            } else if (resultTotalNumberOfRoundsComputer == numberOfRoundsWin) {
-                end = true;
-                winnerGame = "Computer";
             }
-            //displayResults(winnerGame, resultTotalNumberOfRoundsHuman, resultTotalNumberOfRoundsComputer, resultGlobalExecutedMovePlayer, executedMoveComputer, userName);
+        };
 
-//        }
+        EventHandler<MouseEvent> eventHandlerRock = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
 
+                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;
+
+                executedMoveComputer = pC.executeMove();
+
+                try {
+                    imageViewIconMovePlayer.setImage(imageIconRock);
+                    executedMovePlayer = 1;
+                    if (executedMoveComputer == 1) {
+                        imageViewIconMoveComputer.setImage(imageIconRock);
+                        winnerRound = "";
+                    } else if (executedMoveComputer == 2) {
+                        imageViewIconMoveComputer.setImage(imageIconPaper);
+                        resultPlayerComputer++;
+                        winnerRound = "Computer";
+                    } else if (executedMoveComputer == 3) {
+                        imageViewIconMoveComputer.setImage(imageIconScissors);
+                        resultPlayerHuman++;
+                        winnerRound = userName;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                SaveResults(resultPlayerHuman, resultPlayerComputer);
+
+                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
+
+                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
+
+                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+
+                if( resultPlayerHuman == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
+                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
+                }
+            }
+        };
+
+        EventHandler<MouseEvent> eventHandlerScissors = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+
+                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;
+
+                executedMoveComputer = pC.executeMove();
+
+                try {
+                    imageViewIconMovePlayer.setImage(imageIconScissors);
+                    executedMovePlayer = 3;
+                    if (executedMoveComputer == 1) {
+                        imageViewIconMoveComputer.setImage(imageIconRock);
+                        resultPlayerComputer++;
+                        winnerRound = "Computer";
+                    } else if (executedMoveComputer == 2) {
+                        imageViewIconMoveComputer.setImage(imageIconPaper);
+                        resultPlayerHuman++;
+                        winnerRound = userName;
+                    } else if (executedMoveComputer == 3) {
+                        imageViewIconMoveComputer.setImage(imageIconScissors);
+                        winnerRound = "";
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                SaveResults(resultPlayerHuman, resultPlayerComputer);
+
+                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
+
+                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
+
+                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+
+                if( resultPlayerHuman == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win player "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
+                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
+                }
+            }
+        };
+
+        EventHandler<MouseEvent> eventHandlerPlayGameAgain = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    playGameAgain(primaryStage);
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        EventHandler<MouseEvent> eventHandlerCloseWindow = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    endGame(primaryStage);
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        btnPaper.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPaper);
+        btnRock.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerRock);
+        btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
+        btnCloseWindow.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
+        btnPlayGameAgain.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGameAgain);
 
         HBox hboxbuttons = new HBox(btnPaper, btnRock, btnScissors);
         hboxbuttons.setSpacing(5);
         hboxbuttons.setPadding(new Insets(550, 0, 0, 30));
 
+        HBox hboxClosePlaybtns = new HBox(btnCloseWindow, btnPlayGameAgain);
+        hboxClosePlaybtns.setSpacing(50);
+        hboxClosePlaybtns.setPadding(new Insets(10, 0, 0, 350));
+
         HBox hboxRect = new HBox(imageViewIconMovePlayer, imageViewIconMoveComputer);
         hboxRect.setPadding(new Insets(175, 0, 0, 150));
         hboxRect.setSpacing(50);
 
-
-        Label currentResultsGame = new Label();
-        currentResultsGame.setText("Currently results game:");
-        currentResultsGame.setFont(font);
+        Font fontResultGame = Font.font("Arial Black", FontWeight.BOLD, FontPosture.ITALIC, 30);
+        currentResultsGame.setFont(fontResultGame);
         currentResultsGame.setTextFill(Color.RED);
         currentResultsGame.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        currentResultsGame.setText("Player " + userName + " ever execute \nfirst move!");
         HBox hboxCurrentResultsGame = new HBox(currentResultsGame);
-        hboxCurrentResultsGame.setPadding(new Insets(520, 0, 0, 500));
+        hboxCurrentResultsGame.setPadding(new Insets(550, 50, 0, 450));
+        hboxCurrentResultsGame.setFillHeight(true);
 
+        StackPane root = new StackPane();
 
         root.getChildren().add(hboxRect);
         root.getChildren().add(hboxPlayerComputer);
@@ -347,7 +450,9 @@ public class Main extends Application {
         root.getChildren().add(hboxInfoMovesUser);
         root.getChildren().add(hboxlabelUserName);
         root.getChildren().add(hboxlabelComputer);
+        root.getChildren().add(hboxCurrentResultsGame);
         root.getChildren().add(hboxbuttons);
+        root.getChildren().add(hboxClosePlaybtns);
 
         root.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
 
@@ -357,52 +462,155 @@ public class Main extends Application {
 
     }
 
-    public String rulesGame(int movePlayerHuman, int movePlayerComputer) {
-        String resultOfRound = "";
+    public void endGame(Stage primaryStage) {
 
-        if( movePlayerHuman == 1 && movePlayerComputer == 2 ) {
-            resultOfRound = "Computer";
-        } else if( movePlayerHuman == 2 && movePlayerComputer == 1 ) {
-            resultOfRound = "Human";
-        } else if( movePlayerHuman == 1 && movePlayerComputer == 3 ) {
-            resultOfRound = "Human";
-        } else if( movePlayerHuman == 3 && movePlayerComputer == 1 ) {
-            resultOfRound = "Computer";
-        } else if( movePlayerHuman == 2 && movePlayerComputer == 3 ) {
-            resultOfRound = "Computer";
-        } else if( movePlayerHuman == 3 && movePlayerComputer == 2 ) {
-            resultOfRound = "Human";
-        } else {
-            resultOfRound = "";
-        }
-        return resultOfRound;
+        Stage helpStage = new Stage();
+        helpStage.setResizable(false);
+        helpStage.initStyle(StageStyle.UNDECORATED);
+
+        StackPane root = new StackPane();
+
+        Scene scene = new Scene(root,400,150);
+
+        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+
+        Label labelAsk = new Label();
+        labelAsk.setText("Are you sure you want to end the game?");
+        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
+        labelAsk.setFont(font);
+        labelAsk.setTextFill(Color.RED);
+        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Button btnYes = new Button();
+        Image imageIconYes = new Image(getClass().getResourceAsStream("\\icons\\button-yes.png"));
+        ImageView imageViewIconYes = new ImageView(imageIconYes);
+        btnYes.setGraphic(imageViewIconYes);
+        imageViewIconYes.setFitHeight(50);
+        imageViewIconYes.setFitWidth(50);
+
+        Button btnNo = new Button();
+        Image imageIconNo = new Image(getClass().getResourceAsStream("\\icons\\button-no.png"));
+        ImageView imageViewIconNo = new ImageView(imageIconNo);
+        btnNo.setGraphic(imageViewIconNo);
+        imageViewIconNo.setFitHeight(50);
+        imageViewIconNo.setFitWidth(50);
+
+        HBox hBoxlabelAsk = new HBox(labelAsk);
+        HBox hBoxbtns = new HBox(btnYes, btnNo);
+        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 45));
+        hBoxbtns.setSpacing(50);
+        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
+
+        EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    helpStage.close();
+                    primaryStage.close();
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnYes.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerYes);
+
+        EventHandler<MouseEvent> eventHandlerNo = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    helpStage.close();
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
+
+        root.getChildren().add(hBoxlabelAsk);
+        root.getChildren().add(hBoxbtns);
+        helpStage.setScene(scene);
+        helpStage.show();
+
     }
 
-    public void displayResults(String winner, int resultPlayerHuman, int resultPlayerComputer, int movePlayerHuman, int movePlayerComputer, String UserName) {
-        System.out.println("\n\n\nExecute moves players:");
-        System.out.println("Executed move " + UserName + " -> " + movePlayerHuman);
-        System.out.println("Execute move Computer -> " + movePlayerComputer);
+    public void playGameAgain(Stage primaryStage) {
 
-        if( resultPlayerHuman != resultPlayerComputer ) {
-            System.out.println("This round win -> " + winner);
-        } else {
-            System.out.println("There was a draw this round!");
-        }
-        System.out.println("Currently result game : \nPlayer-" + UserName + " -> " + resultPlayerHuman + "\tPlayer-Computer -> " + resultPlayerComputer + "\n\n\n");
+        Stage helpStage = new Stage();
+        helpStage.setResizable(false);
+        helpStage.initStyle(StageStyle.UNDECORATED);
+
+        StackPane root = new StackPane();
+
+        Scene scene = new Scene(root,400,150);
+
+        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+
+        Label labelAsk = new Label();
+        labelAsk.setText("Are you sure you want to end the current game?");
+        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
+        labelAsk.setFont(font);
+        labelAsk.setTextFill(Color.RED);
+        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Button btnYes = new Button();
+        Image imageIconYes = new Image(getClass().getResourceAsStream("\\icons\\button-yes.png"));
+        ImageView imageViewIconYes = new ImageView(imageIconYes);
+        btnYes.setGraphic(imageViewIconYes);
+        imageViewIconYes.setFitHeight(50);
+        imageViewIconYes.setFitWidth(50);
+
+        Button btnNo = new Button();
+        Image imageIconNo = new Image(getClass().getResourceAsStream("\\icons\\button-no.png"));
+        ImageView imageViewIconNo = new ImageView(imageIconNo);
+        btnNo.setGraphic(imageViewIconNo);
+        imageViewIconNo.setFitHeight(50);
+        imageViewIconNo.setFitWidth(50);
+
+        HBox hBoxlabelAsk = new HBox(labelAsk);
+        HBox hBoxbtns = new HBox(btnYes, btnNo);
+        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 15));
+        hBoxbtns.setSpacing(50);
+        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
+
+        EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    helpStage.close();
+                    primaryStage.close();
+                    showLoginScreen();
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnYes.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerYes);
+
+        EventHandler<MouseEvent> eventHandlerNo = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    helpStage.close();
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
+
+        root.getChildren().add(hBoxlabelAsk);
+        root.getChildren().add(hBoxbtns);
+        helpStage.setScene(scene);
+        helpStage.show();
+
     }
 
-    int globalExecutedMovePlayer = 0;
     int totalNumberOfRoundsHuman = 0;
     int totalNumberOfRoundsComputer = 0;
 
-    public void SaveResults(int executedMovePlayer, int numberOfRoundsHuman, int numberOfRoundsComputer) {
-        globalExecutedMovePlayer = executedMovePlayer;
+    public void SaveResults(int numberOfRoundsHuman, int numberOfRoundsComputer) {
         totalNumberOfRoundsHuman += numberOfRoundsHuman;
         totalNumberOfRoundsComputer += numberOfRoundsComputer;
-    }
-
-    public int returnGlobalExecutedMovePlayer() {
-        return globalExecutedMovePlayer;
     }
 
     public int returnTotalNumberOfRoundsHuman() {
@@ -416,4 +624,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }
