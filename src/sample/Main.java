@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.stage.StageStyle;
+//import javafx.stage.StageStyle;
+
 
 
 public class Main extends Application {
@@ -28,12 +30,7 @@ public class Main extends Application {
 
         try {
 
-//            do {
-
-            playGame("Adam", 2);
-
-//            } while( !end );
-            //showLoginScreen();
+            showLoginScreen();
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -42,50 +39,60 @@ public class Main extends Application {
 
 
 
-    public void showLoginScreen() {
+    Stage stage = new Stage();
+    Button btnPlayGame = new Button();
+    Button btnCloseWindowForm = new Button();
+    TextField userName = new TextField();
+    NumberSpinner numberOfRounds = new NumberSpinner();
 
-        Stage stage = new Stage();
+
+
+    public void showLoginScreen() {
 
         StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER);
 
         stage.setResizable(false);
-        stage.initStyle(StageStyle.UNDECORATED);
-
+//        stage.initStyle(StageStyle.UNDECORATED);
 
         Label label = new Label("Input below data!");
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
+        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 30);
         label.setFont(font);
         label.setTextFill(Color.RED);
         label.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        TextField userName = new TextField();
-        userName.setPromptText("Input your name: ");
-        //TextField numberOfRounds = new TextField();
+        Label labelNumber = new Label("Input number from range [1 - 99]:");
+        Font fontNumber = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
+        labelNumber.setFont(fontNumber);
+        labelNumber.setTextFill(Color.RED);
+        labelNumber.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
-//        NumberTextField numberOfRounds = new NumberTextField();
+        userName.setPadding(new Insets(10, 10, 10, 10));
+        //userName.setText("");
+        userName.setPromptText("Input your name!");
 
-        NumberSpinner numberOfRounds = new NumberSpinner();
+//        numberOfRounds.setNumber();
+//        numberOfRounds.setPromptText("Input number from range [1 - 99]!");
 
-//        numberOfRounds.setPromptText("Input number of rounds: ");
-
-        Button btnPlayGame = new Button();
-        //btnPlayGame.setText("Play");
         Image imageIconPlayGame = new Image( getClass().getResourceAsStream("\\icons\\button-play.png") );
         ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
-        imageViewIconPlayGame.setFitHeight(25);
-        imageViewIconPlayGame.setFitWidth(50);
+        imageViewIconPlayGame.setFitHeight(50);
+        imageViewIconPlayGame.setFitWidth(100);
         btnPlayGame.setGraphic(imageViewIconPlayGame);
+
+        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
+        ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
+        btnCloseWindowForm.setGraphic(imageViewIconCloseWindow);
+        imageViewIconCloseWindow.setFitHeight(50);
+        imageViewIconCloseWindow.setFitWidth(50);
 
         EventHandler<MouseEvent> eventHandlerPlayGame = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 ) {
+                    if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 && numberOfRounds.getNumber().intValue() < 100 ) {
                         stage.close();
                         playGame(userName.getText(), numberOfRounds.getNumber().intValue());
-                    } else {
-                        System.out.println("fdsghs");
                     }
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
@@ -94,6 +101,29 @@ public class Main extends Application {
         };
 
         btnPlayGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGame);
+
+        EventHandler<MouseEvent> eventHandlerCloseWindow = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    btnPlayGame.setDisable(true);
+                    btnCloseWindowForm.setDisable(true);
+                    endGame();
+                } catch(NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        btnCloseWindowForm.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
+
+        HBox hboxPlayClosebtns = new HBox(btnPlayGame, btnCloseWindowForm);
+        hboxPlayClosebtns.setSpacing(50);
+        hboxPlayClosebtns.setPadding(new Insets(10, 0, 0, 50));
+
+        HBox hboxNumber = new HBox(labelNumber, numberOfRounds);
+        hboxNumber.setSpacing(30);
+        hboxNumber.setPadding(new Insets(10, 0, 0, 10));
 
         VBox box = new VBox();
         box.setPadding(new Insets(10));
@@ -104,9 +134,9 @@ public class Main extends Application {
 
         box.getChildren().add(label);
         box.getChildren().add(userName);
-        box.getChildren().add(numberOfRounds);
-        box.getChildren().add(btnPlayGame);
-        Scene scene = new Scene(box, 300, 200);
+        box.getChildren().add(hboxNumber);
+        box.getChildren().add(hboxPlayClosebtns);
+        Scene scene = new Scene(box, 325, 325);
         stage.setScene(scene);
 
         box.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
@@ -117,29 +147,27 @@ public class Main extends Application {
 
 
 
+    Stage primaryStage = new Stage();
+
     int executedMovePlayer = 0;
     int resultPlayerHuman = 0;
     int resultPlayerComputer = 0;
     int executedMoveComputer = 0;
 
     PlayerComputer pC = new PlayerComputer();
-    boolean end = false;
-    String winnerGame = "";
 
-    int resultGlobalExecutedMovePlayer = 0;
     int resultTotalNumberOfRoundsHuman = 0;
     int resultTotalNumberOfRoundsComputer = 0;
 
     String winnerRound = "";
 
-
+    Button btnCloseWindowGame = new Button();
+    Button btnPlayGameAgain = new Button();
 
     public void playGame(String userName, int numberOfRoundsWin) {
 
-        Stage primaryStage = new Stage();
-
         primaryStage.setResizable(false);
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
@@ -215,14 +243,13 @@ public class Main extends Application {
         imageViewIconScissors.setFitHeight(100);
         imageViewIconScissors.setFitWidth(100);
 
-        Button btnCloseWindow = new Button();
+        //Button btnCloseWindow = new Button();
         Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
         ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
-        btnCloseWindow.setGraphic(imageViewIconCloseWindow);
+        btnCloseWindowGame.setGraphic(imageViewIconCloseWindow);
         imageViewIconCloseWindow.setFitHeight(50);
         imageViewIconCloseWindow.setFitWidth(50);
 
-        Button btnPlayGameAgain = new Button();
         Image imageIconPlayGame = new Image(getClass().getResourceAsStream("\\icons\\play_again_button.png"));
         ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
         btnPlayGameAgain.setGraphic(imageViewIconPlayGame);
@@ -397,7 +424,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    playGameAgain(primaryStage);
+                    btnCloseWindowGame.setDisable(true);
+                    btnPlayGameAgain.setDisable(true);
+                    playGameAgain();
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
@@ -408,7 +437,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    endGame(primaryStage);
+                    btnCloseWindowGame.setDisable(true);
+                    btnPlayGameAgain.setDisable(true);
+                    endGame();
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
@@ -418,16 +449,36 @@ public class Main extends Application {
         btnPaper.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPaper);
         btnRock.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerRock);
         btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
-        btnCloseWindow.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
+        btnCloseWindowGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
         btnPlayGameAgain.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGameAgain);
 
-        HBox hboxbuttons = new HBox(btnPaper, btnRock, btnScissors);
-        hboxbuttons.setSpacing(5);
-        hboxbuttons.setPadding(new Insets(550, 0, 0, 30));
+        HBox hboxButtons = new HBox(btnPaper, btnRock, btnScissors);//, btnCloseWindow, btnPlayGameAgain);
+        hboxButtons.setSpacing(5);
+        hboxButtons.setPadding(new Insets(550, 0, 0, 30));
 
-        HBox hboxClosePlaybtns = new HBox(btnCloseWindow, btnPlayGameAgain);
+        HBox hboxClosePlaybtns = new HBox(btnCloseWindowGame, btnPlayGameAgain);
         hboxClosePlaybtns.setSpacing(50);
         hboxClosePlaybtns.setPadding(new Insets(10, 0, 0, 350));
+
+        StackPane spButtonsMove = new StackPane();
+        spButtonsMove.getChildren().add(hboxButtons);
+        spButtonsMove.setPadding(new Insets(550, 0, 0, 30));
+        spButtonsMove.setTranslateX(50);
+        spButtonsMove.setTranslateY(50);
+
+        StackPane spButtonsClosePlay = new StackPane();
+        spButtonsClosePlay.getChildren().add(hboxClosePlaybtns);
+        spButtonsClosePlay.setPadding(new Insets(10, 0, 0, 350));
+
+        Group firstGroup = new Group();
+        firstGroup.getChildren().add(hboxButtons);
+        firstGroup.setTranslateX(-310);
+        firstGroup.setTranslateY(-10);
+
+        Group sceondGroup = new Group();
+        sceondGroup.getChildren().add(hboxClosePlaybtns);
+        sceondGroup.setTranslateX(-200);
+        sceondGroup.setTranslateY(-300);
 
         HBox hboxRect = new HBox(imageViewIconMovePlayer, imageViewIconMoveComputer);
         hboxRect.setPadding(new Insets(175, 0, 0, 150));
@@ -451,8 +502,8 @@ public class Main extends Application {
         root.getChildren().add(hboxlabelUserName);
         root.getChildren().add(hboxlabelComputer);
         root.getChildren().add(hboxCurrentResultsGame);
-        root.getChildren().add(hboxbuttons);
-        root.getChildren().add(hboxClosePlaybtns);
+        root.getChildren().add(firstGroup);
+        root.getChildren().add(sceondGroup);
 
         root.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
 
@@ -462,11 +513,12 @@ public class Main extends Application {
 
     }
 
-    public void endGame(Stage primaryStage) {
+    Stage helpStageEndGame = new Stage();
 
-        Stage helpStage = new Stage();
-        helpStage.setResizable(false);
-        helpStage.initStyle(StageStyle.UNDECORATED);
+    public void endGame() {
+
+        helpStageEndGame.setResizable(false);
+//        helpStageEndGame.initStyle(StageStyle.UNDECORATED);
 
         StackPane root = new StackPane();
 
@@ -505,8 +557,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    helpStage.close();
+                    helpStageEndGame.close();
                     primaryStage.close();
+                    stage.close();
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
@@ -518,7 +571,11 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    helpStage.close();
+                    btnPlayGame.setDisable(false);
+                    btnCloseWindowForm.setDisable(false);
+                    btnCloseWindowGame.setDisable(false);
+                    btnPlayGameAgain.setDisable(false);
+                    helpStageEndGame.close();
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
@@ -528,16 +585,17 @@ public class Main extends Application {
 
         root.getChildren().add(hBoxlabelAsk);
         root.getChildren().add(hBoxbtns);
-        helpStage.setScene(scene);
-        helpStage.show();
+        helpStageEndGame.setScene(scene);
+        helpStageEndGame.show();
 
     }
 
-    public void playGameAgain(Stage primaryStage) {
+    Stage helpStageGameAgain = new Stage();
 
-        Stage helpStage = new Stage();
-        helpStage.setResizable(false);
-        helpStage.initStyle(StageStyle.UNDECORATED);
+    public void playGameAgain() {
+
+        helpStageGameAgain.setResizable(false);
+//        helpStageGameAgain.initStyle(StageStyle.UNDECORATED);
 
         StackPane root = new StackPane();
 
@@ -576,7 +634,12 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    helpStage.close();
+                    //userName.setText("");
+                    //numberOfRounds.setNumber();
+                    btnCloseWindowGame.setDisable(false);
+                    btnPlayGameAgain.setDisable(false);
+                    helpStageGameAgain.close();
+                    stage.close();
                     primaryStage.close();
                     showLoginScreen();
                 } catch(NumberFormatException ex) {
@@ -590,7 +653,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    helpStage.close();
+                    btnCloseWindowGame.setDisable(false);
+                    btnPlayGameAgain.setDisable(false);
+                    helpStageGameAgain.close();
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
                 }
@@ -600,8 +665,8 @@ public class Main extends Application {
 
         root.getChildren().add(hBoxlabelAsk);
         root.getChildren().add(hBoxbtns);
-        helpStage.setScene(scene);
-        helpStage.show();
+        helpStageGameAgain.setScene(scene);
+        helpStageGameAgain.show();
 
     }
 
@@ -624,5 +689,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+
 
 }

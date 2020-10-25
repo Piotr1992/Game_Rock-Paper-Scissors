@@ -40,12 +40,13 @@ public class NumberSpinner extends HBox {
     private ObjectProperty<BigDecimal> stepWitdhProperty = new SimpleObjectProperty<>();
     private final double ARROW_SIZE = 2;
     private final Button incrementButton;
-//    private final Button decrementButton;
+    //    private final Button decrementButton;
     private final NumberBinding buttonHeight;
 //    private final NumberBinding spacing;
 
     public NumberSpinner() {
-        this(BigDecimal.ZERO, BigDecimal.ONE);
+        this(BigDecimal.ONE, BigDecimal.ONE);
+        //numberField.setPromptText("Input number from range [1 - 99]!");
     }
 
     public NumberSpinner(BigDecimal value, BigDecimal stepWidth) {
@@ -59,7 +60,7 @@ public class NumberSpinner extends HBox {
 
         // TextField
         numberField = new NumberTextField(value, nf);
-        numberField.setPrefWidth(30);
+        numberField.setPrefWidth(40);
         numberField.setId(NUMBER_FIELD);
 
         // Enable arrow keys for dec/inc
@@ -72,8 +73,8 @@ public class NumberSpinner extends HBox {
                     keyEvent.consume();
                 }                   */
                 if (keyEvent.getCode() == KeyCode.UP) {
-                    increment();
-                    keyEvent.consume();
+//                    increment();
+//                    keyEvent.consume();
                 }
             }
         });
@@ -131,10 +132,8 @@ public class NumberSpinner extends HBox {
         decrementButton.maxHeightProperty().bind(buttonHeight);
         decrementButton.prefHeightProperty().bind(buttonHeight);
         decrementButton.minHeightProperty().bind(buttonHeight);
-
         decrementButton.setFocusTraversable(false);
         decrementButton.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent ae) {
                 decrement();
@@ -151,7 +150,9 @@ public class NumberSpinner extends HBox {
 
         this.setAlignment(Pos.CENTER);
 
-        this.getChildren().addAll(numberField, buttons);
+//        this.getChildren().addAll(numberField, buttons);
+
+        this.getChildren().add(numberField);
 
     }
 

@@ -95,11 +95,13 @@ public class NumberTextField extends TextField {
             }
             Number parsedNumber = nf.parse(input);
             BigDecimal newValue = new BigDecimal(parsedNumber.toString());
+//            setNumber(newValue);
             setNumber(newValue);
             selectAll();
         } catch (ParseException ex) {
             // If parsing fails keep old number
             setText(nf.format(number.get()));
+//            setText("Input number from range [1 - 99]!");
         }
     }
 }
