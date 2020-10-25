@@ -2,6 +2,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,6 +20,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+
+import javax.swing.event.ChangeListener;
+import java.math.BigDecimal;
 //import javafx.stage.StageStyle;
 
 
@@ -48,6 +52,11 @@ public class Main extends Application {
 
 
     public void showLoginScreen() {
+
+        userName.setText("");
+        numberOfRounds.setNumber(new BigDecimal("0"));
+
+
 
         StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER);
@@ -154,6 +163,9 @@ public class Main extends Application {
     int resultPlayerComputer = 0;
     int executedMoveComputer = 0;
 
+    int totalNumberOfRoundsHuman = 0;
+    int totalNumberOfRoundsComputer = 0;
+
     PlayerComputer pC = new PlayerComputer();
 
     int resultTotalNumberOfRoundsHuman = 0;
@@ -168,6 +180,9 @@ public class Main extends Application {
 
         primaryStage.setResizable(false);
 //        primaryStage.initStyle(StageStyle.UNDECORATED);
+
+        totalNumberOfRoundsHuman = 0;
+        totalNumberOfRoundsComputer = 0;
 
         Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
@@ -292,17 +307,17 @@ public class Main extends Application {
 
                 resultPlayerComputer = returnTotalNumberOfRoundsComputer();
 
-                currentResultsGame.setText("Current result game:\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                currentResultsGame.setText("Current result game:\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
                 if( resultPlayerHuman == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 } else if( resultPlayerComputer == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
@@ -346,17 +361,17 @@ public class Main extends Application {
 
                 resultPlayerComputer = returnTotalNumberOfRoundsComputer();
 
-                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
                 if( resultPlayerHuman == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 } else if( resultPlayerComputer == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
@@ -400,17 +415,17 @@ public class Main extends Application {
 
                 resultPlayerComputer = returnTotalNumberOfRoundsComputer();
 
-                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
                 if( resultPlayerHuman == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win player "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win player "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 } else if( resultPlayerComputer == numberOfRoundsWin ) {
-                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "\t" + "Computer -> " + resultPlayerComputer);
+                    currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
                     btnPaper.setDisable(true);
@@ -669,9 +684,6 @@ public class Main extends Application {
         helpStageGameAgain.show();
 
     }
-
-    int totalNumberOfRoundsHuman = 0;
-    int totalNumberOfRoundsComputer = 0;
 
     public void SaveResults(int numberOfRoundsHuman, int numberOfRoundsComputer) {
         totalNumberOfRoundsHuman += numberOfRoundsHuman;

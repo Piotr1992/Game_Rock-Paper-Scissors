@@ -45,7 +45,7 @@ public class NumberSpinner extends HBox {
 //    private final NumberBinding spacing;
 
     public NumberSpinner() {
-        this(BigDecimal.ONE, BigDecimal.ONE);
+        this(BigDecimal.ZERO, BigDecimal.ONE);
         //numberField.setPromptText("Input number from range [1 - 99]!");
     }
 
@@ -63,19 +63,36 @@ public class NumberSpinner extends HBox {
         numberField.setPrefWidth(40);
         numberField.setId(NUMBER_FIELD);
 
+
+        final int maxLength = 2;
+
+        numberField.setOnKeyTyped(t -> {
+
+            if (numberField.getText().length() > maxLength) {
+                int pos = numberField.getCaretPosition();
+                numberField.setText(numberField.getText(0, maxLength));
+                numberField.positionCaret(pos); //To reposition caret since setText sets it at the beginning by default
+            }
+
+        });
+
+
         // Enable arrow keys for dec/inc
         numberField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 
             @Override
             public void handle(KeyEvent keyEvent) {
+
+                keyEvent.getText().matches("[0-9]*");
+
 /*                if (keyEvent.getCode() == KeyCode.DOWN) {
                     decrement();
                     keyEvent.consume();
                 }                   */
-                if (keyEvent.getCode() == KeyCode.UP) {
+//                if (keyEvent.getCode() == KeyCode.UP) {
 //                    increment();
 //                    keyEvent.consume();
-                }
+//                }
             }
         });
 

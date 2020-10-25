@@ -104,4 +104,39 @@ public class NumberTextField extends TextField {
 //            setText("Input number from range [1 - 99]!");
         }
     }
+
+    @Override
+    public void replaceText(int start, int end, String text)
+    {
+        if (validate(text))
+        {
+            super.replaceText(start, end, text);
+        }
+    }
+
+    @Override
+    public void replaceSelection(String text)
+    {
+        if (validate(text))
+        {
+            super.replaceSelection(text);
+        }
+    }
+
+    private boolean validate(String text)
+    {
+        return text.matches("[0-9]*");
+    }
+
+    private final int limit = 2;
+
+    private void verify() {
+        if (getText().length() > limit) {
+            setText(getText().substring(0, limit));
+        }
+
+    }
+
+
+
 }
