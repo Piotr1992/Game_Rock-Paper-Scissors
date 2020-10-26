@@ -1,51 +1,47 @@
 
 package sample;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 
 /**
- * Textfield implementation that accepts formatted number and stores them in a
- * BigDecimal property The user input is formatted when the focus is lost or the
- * user hits RETURN.
  *
- * @author Thomas Bolz
- */
+ * Implementation Textfield for integer numbers!
+ *
+ **/
+
 public class NumberTextField extends TextField {
 
     private final NumberFormat nf;
-    private ObjectProperty<BigDecimal> number = new SimpleObjectProperty<>();
+    private ObjectProperty<Integer> number = new SimpleObjectProperty<>();
 
-    public final BigDecimal getNumber() {
+    public final Integer getNumber() {
         return number.get();
     }
 
-    public final void setNumber(BigDecimal value) {
+    public final void setNumber(Integer value) {
         number.set(value);
     }
 
-    public ObjectProperty<BigDecimal> numberProperty() {
+    public ObjectProperty<Integer> numberProperty() {
         return number;
     }
 
     public NumberTextField() {
-        this(BigDecimal.ZERO);
+        this(0);
     }
 
-    public NumberTextField(BigDecimal value) {
+    public NumberTextField(Integer value) {
         this(value, NumberFormat.getInstance());
         initHandlers();
     }
 
-    public NumberTextField(BigDecimal value, NumberFormat nf) {
+    public NumberTextField(Integer value, NumberFormat nf) {
         super();
         this.nf = nf;
         initHandlers();
@@ -55,14 +51,6 @@ public class NumberTextField extends TextField {
     private void initHandlers() {
 
         // try to parse when focus is lost or RETURN is hit
-        setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent arg0) {
-                parseAndFormatInput();
-            }
-        });
-
         focusedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
@@ -74,10 +62,10 @@ public class NumberTextField extends TextField {
         });
 
         // Set text in field if BigDecimal property is changed from outside.
-        numberProperty().addListener(new ChangeListener<BigDecimal>() {
+        numberProperty().addListener(new ChangeListener<Integer>() {
 
             @Override
-            public void changed(ObservableValue<? extends BigDecimal> obserable, BigDecimal oldValue, BigDecimal newValue) {
+            public void changed(ObservableValue<? extends Integer> obserable, Integer oldValue, Integer newValue) {
                 setText(nf.format(newValue));
             }
         });
@@ -86,7 +74,7 @@ public class NumberTextField extends TextField {
     /**
      * Tries to parse the user input to a number according to the provided
      * NumberFormat
-     */
+     **/
     private void parseAndFormatInput() {
         try {
             String input = getText();
@@ -94,14 +82,11 @@ public class NumberTextField extends TextField {
                 return;
             }
             Number parsedNumber = nf.parse(input);
-            BigDecimal newValue = new BigDecimal(parsedNumber.toString());
-//            setNumber(newValue);
+            Integer newValue = new Integer(parsedNumber.toString());
             setNumber(newValue);
             selectAll();
         } catch (ParseException ex) {
-            // If parsing fails keep old number
-            setText(nf.format(number.get()));
-//            setText("Input number from range [1 - 99]!");
+            setText(nf.format(number.get()));           //          If parsing fails keep old number
         }
     }
 
@@ -127,16 +112,5 @@ public class NumberTextField extends TextField {
     {
         return text.matches("[0-9]*");
     }
-
-    private final int limit = 2;
-
-    private void verify() {
-        if (getText().length() > limit) {
-            setText(getText().substring(0, limit));
-        }
-
-    }
-
-
 
 }

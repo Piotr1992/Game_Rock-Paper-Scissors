@@ -2,7 +2,6 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,7 +9,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -21,8 +19,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-import javax.swing.event.ChangeListener;
-import java.math.BigDecimal;
 //import javafx.stage.StageStyle;
 
 
@@ -44,19 +40,65 @@ public class Main extends Application {
 
 
     Stage stage = new Stage();
+
     Button btnPlayGame = new Button();
     Button btnCloseWindowForm = new Button();
-    TextField userName = new TextField();
+
+    LimitSpinner userName = new LimitSpinner();
     NumberSpinner numberOfRounds = new NumberSpinner();
+
+    int numberOfRoundsWin = 0;
+
+    Stage primaryStage = new Stage();
+
+    int executedMovePlayer = 0;
+    int executedMoveComputer = 0;
+
+    int resultPlayerHuman = 0;
+    int resultPlayerComputer = 0;
+
+    int totalNumberOfRoundsHuman = 0;
+    int totalNumberOfRoundsComputer = 0;
+
+    PlayerComputer pC = new PlayerComputer();
+
+    int resultTotalNumberOfRoundsHuman = 0;
+    int resultTotalNumberOfRoundsComputer = 0;
+
+    int totalResultNumberOfRoundsHuman = 0;
+    int totalResultNumberOfRoundsComputer = 0;
+
+    String winnerRound = "";
+
+    Button btnPaper = new Button();
+    Button btnRock = new Button();
+    Button btnScissors = new Button();
+
+    Button btnCloseWindowGame = new Button();
+    Button btnPlayGameAgain = new Button();
+
+    Stage helpStageEndGame = new Stage();
+    Stage helpStageGameAgain = new Stage();
 
 
 
     public void showLoginScreen() {
 
-        userName.setText("");
-        numberOfRounds.setNumber(new BigDecimal("0"));
+        resultPlayerHuman = 0;
+        resultPlayerComputer = 0;
 
+        totalNumberOfRoundsHuman = 0;
+        totalNumberOfRoundsComputer = 0;
 
+        resultTotalNumberOfRoundsHuman = 0;
+        resultTotalNumberOfRoundsComputer = 0;
+
+        totalResultNumberOfRoundsHuman = 0;
+        totalResultNumberOfRoundsComputer = 0;
+
+        userName.setText();
+
+        numberOfRounds.setNumber(0);
 
         StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER);
@@ -64,24 +106,26 @@ public class Main extends Application {
         stage.setResizable(false);
 //        stage.initStyle(StageStyle.UNDECORATED);
 
-        Label label = new Label("Input below data!");
         Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 30);
+
+        Label label = new Label("Fill in the data below!");
         label.setFont(font);
         label.setTextFill(Color.RED);
         label.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        Label labelNumber = new Label("Input number from range [1 - 99]:");
-        Font fontNumber = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
-        labelNumber.setFont(fontNumber);
+        Font fontUserNameNumber = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
+
+        Label labelUserName = new Label("Input your name:");
+        labelUserName.setFont(fontUserNameNumber);
+        labelUserName.setTextFill(Color.RED);
+        labelUserName.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Label labelNumber = new Label("Input number won rounds from range [1 - 99]:");
+        labelNumber.setFont(fontUserNameNumber);
         labelNumber.setTextFill(Color.RED);
         labelNumber.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        userName.setPadding(new Insets(10, 10, 10, 10));
-        //userName.setText("");
-        userName.setPromptText("Input your name!");
 
-//        numberOfRounds.setNumber();
-//        numberOfRounds.setPromptText("Input number from range [1 - 99]!");
 
         Image imageIconPlayGame = new Image( getClass().getResourceAsStream("\\icons\\button-play.png") );
         ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
@@ -101,7 +145,21 @@ public class Main extends Application {
                 try {
                     if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 && numberOfRounds.getNumber().intValue() < 100 ) {
                         stage.close();
-                        playGame(userName.getText(), numberOfRounds.getNumber().intValue());
+
+/*                        resultPlayerHuman = 0;
+                        resultPlayerComputer = 0;
+
+                        totalNumberOfRoundsHuman = 0;
+                        totalNumberOfRoundsComputer = 0;
+
+                        resultTotalNumberOfRoundsHuman = 0;
+                        resultTotalNumberOfRoundsComputer = 0;
+
+                        totalResultNumberOfRoundsHuman = 0;
+                        totalResultNumberOfRoundsComputer = 0;                      */
+                        numberOfRoundsWin = numberOfRounds.getNumber().intValue();
+//                        playGame(userName.getText(), numberOfRounds.getNumber().intValue());
+                        playGame(userName.getText());
                     }
                 } catch(NumberFormatException ex) {
                     ex.printStackTrace();
@@ -126,13 +184,17 @@ public class Main extends Application {
 
         btnCloseWindowForm.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
 
-        HBox hboxPlayClosebtns = new HBox(btnPlayGame, btnCloseWindowForm);
-        hboxPlayClosebtns.setSpacing(50);
-        hboxPlayClosebtns.setPadding(new Insets(10, 0, 0, 50));
+        HBox hboxUserName = new HBox(labelUserName, userName);
+        hboxUserName.setSpacing(30);
+        hboxUserName.setPadding(new Insets(10, 0, 0, 10));
 
         HBox hboxNumber = new HBox(labelNumber, numberOfRounds);
         hboxNumber.setSpacing(30);
         hboxNumber.setPadding(new Insets(10, 0, 0, 10));
+
+        HBox hboxPlayClosebtns = new HBox(btnPlayGame, btnCloseWindowForm);
+        hboxPlayClosebtns.setSpacing(100);
+        hboxPlayClosebtns.setPadding(new Insets(10, 0, 0, 50));
 
         VBox box = new VBox();
         box.setPadding(new Insets(10));
@@ -142,10 +204,10 @@ public class Main extends Application {
         box.setSpacing(30);
 
         box.getChildren().add(label);
-        box.getChildren().add(userName);
+        box.getChildren().add(hboxUserName);
         box.getChildren().add(hboxNumber);
         box.getChildren().add(hboxPlayClosebtns);
-        Scene scene = new Scene(box, 325, 325);
+        Scene scene = new Scene(box, 400, 400);
         stage.setScene(scene);
 
         box.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
@@ -156,33 +218,24 @@ public class Main extends Application {
 
 
 
-    Stage primaryStage = new Stage();
+//    public void playGame(String userName, int numberOfRoundsWin) {
 
-    int executedMovePlayer = 0;
-    int resultPlayerHuman = 0;
-    int resultPlayerComputer = 0;
-    int executedMoveComputer = 0;
-
-    int totalNumberOfRoundsHuman = 0;
-    int totalNumberOfRoundsComputer = 0;
-
-    PlayerComputer pC = new PlayerComputer();
-
-    int resultTotalNumberOfRoundsHuman = 0;
-    int resultTotalNumberOfRoundsComputer = 0;
-
-    String winnerRound = "";
-
-    Button btnCloseWindowGame = new Button();
-    Button btnPlayGameAgain = new Button();
-
-    public void playGame(String userName, int numberOfRoundsWin) {
+    public void playGame(String userName) {
 
         primaryStage.setResizable(false);
 //        primaryStage.initStyle(StageStyle.UNDECORATED);
 
+        resultPlayerHuman = 0;
+        resultPlayerComputer = 0;
+
         totalNumberOfRoundsHuman = 0;
         totalNumberOfRoundsComputer = 0;
+
+/*        resultTotalNumberOfRoundsHuman = 0;
+        resultTotalNumberOfRoundsComputer = 0;              */
+
+        totalResultNumberOfRoundsHuman = 0;
+        totalResultNumberOfRoundsComputer = 0;
 
         Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
@@ -227,13 +280,6 @@ public class Main extends Application {
         HBox hboxInfoMovesUser = new HBox(infoMovesUser);
         hboxInfoMovesUser.setPadding(new Insets(520, 0, 0, 40));
 
-        Button btnPaper = new Button();
-        Image imageIconPaper = new Image(getClass().getResourceAsStream("\\icons\\paper.png"));
-        ImageView imageViewIconPaper = new ImageView(imageIconPaper);
-        btnPaper.setGraphic(imageViewIconPaper);
-        imageViewIconPaper.setFitHeight(100);
-        imageViewIconPaper.setFitWidth(100);
-
         Image imageIconMovePlayer = new Image(getClass().getResourceAsStream(""));
         ImageView imageViewIconMovePlayer = new ImageView(imageIconMovePlayer);
         imageViewIconMovePlayer.setFitWidth(300);
@@ -244,21 +290,24 @@ public class Main extends Application {
         imageViewIconMoveComputer.setFitWidth(300);
         imageViewIconMoveComputer.setFitHeight(300);
 
-        Button btnRock = new Button();
+        Image imageIconPaper = new Image(getClass().getResourceAsStream("\\icons\\paper.png"));
+        ImageView imageViewIconPaper = new ImageView(imageIconPaper);
+        btnPaper.setGraphic(imageViewIconPaper);
+        imageViewIconPaper.setFitHeight(100);
+        imageViewIconPaper.setFitWidth(100);
+
         Image imageIconRock = new Image(getClass().getResourceAsStream("\\icons\\rock.png"));
         ImageView imageViewIconRock = new ImageView(imageIconRock);
         btnRock.setGraphic(imageViewIconRock);
         imageViewIconRock.setFitHeight(100);
         imageViewIconRock.setFitWidth(100);
 
-        Button btnScissors = new Button();
         Image imageIconScissors = new Image(getClass().getResourceAsStream("\\icons\\scissors.jpg"));
         ImageView imageViewIconScissors = new ImageView(imageIconScissors);
         btnScissors.setGraphic(imageViewIconScissors);
         imageViewIconScissors.setFitHeight(100);
         imageViewIconScissors.setFitWidth(100);
 
-        //Button btnCloseWindow = new Button();
         Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
         ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
         btnCloseWindowGame.setGraphic(imageViewIconCloseWindow);
@@ -271,14 +320,27 @@ public class Main extends Application {
         imageViewIconPlayGame.setFitHeight(50);
         imageViewIconPlayGame.setFitWidth(150);
 
+        btnPaper.setDisable(false);
+        btnRock.setDisable(false);
+        btnScissors.setDisable(false);
+
         Label currentResultsGame = new Label();
 
         EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
 
-                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;
+/*                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;               */
+
+                totalNumberOfRoundsHuman = 0;
+                totalNumberOfRoundsComputer = 0;
+
+                resultTotalNumberOfRoundsHuman = 0;
+                resultTotalNumberOfRoundsComputer = 0;
+
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
 
                 executedMoveComputer = pC.executeMove();
 
@@ -303,23 +365,27 @@ public class Main extends Application {
 
                 SaveResults(resultPlayerHuman, resultPlayerComputer);
 
-                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
+                totalResultNumberOfRoundsHuman = returnTotalNumberOfRoundsHuman();
 
-                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
+                totalResultNumberOfRoundsComputer = returnTotalNumberOfRoundsComputer();
 
                 currentResultsGame.setText("Current result game:\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
-                if( resultPlayerHuman == numberOfRoundsWin ) {
+                if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
-                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
@@ -331,8 +397,17 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 
-                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;
+/*                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;               */
+
+                totalNumberOfRoundsHuman = 0;
+                totalNumberOfRoundsComputer = 0;
+
+                resultTotalNumberOfRoundsHuman = 0;
+                resultTotalNumberOfRoundsComputer = 0;
+
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
 
                 executedMoveComputer = pC.executeMove();
 
@@ -357,23 +432,27 @@ public class Main extends Application {
 
                 SaveResults(resultPlayerHuman, resultPlayerComputer);
 
-                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
+                totalResultNumberOfRoundsHuman = returnTotalNumberOfRoundsHuman();
 
-                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
+                totalResultNumberOfRoundsComputer = returnTotalNumberOfRoundsComputer();
 
                 currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
-                if( resultPlayerHuman == numberOfRoundsWin ) {
+                if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
-                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
@@ -385,8 +464,17 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 
-                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;
+/*                resultPlayerHuman = 0;
+                resultPlayerComputer = 0;               */
+
+                totalNumberOfRoundsHuman = 0;
+                totalNumberOfRoundsComputer = 0;
+
+                resultTotalNumberOfRoundsHuman = 0;
+                resultTotalNumberOfRoundsComputer = 0;
+
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
 
                 executedMoveComputer = pC.executeMove();
 
@@ -411,23 +499,27 @@ public class Main extends Application {
 
                 SaveResults(resultPlayerHuman, resultPlayerComputer);
 
-                resultPlayerHuman = returnTotalNumberOfRoundsHuman();
+                totalResultNumberOfRoundsHuman = returnTotalNumberOfRoundsHuman();
 
-                resultPlayerComputer = returnTotalNumberOfRoundsComputer();
+                totalResultNumberOfRoundsComputer = returnTotalNumberOfRoundsComputer();
 
                 currentResultsGame.setText("Current result game: \n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
-                if( resultPlayerHuman == numberOfRoundsWin ) {
+                if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win player "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
-                } else if( resultPlayerComputer == numberOfRoundsWin ) {
+                } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
-                    resultTotalNumberOfRoundsHuman = 0;
-                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;
+
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
@@ -439,6 +531,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
                     playGameAgain();
@@ -452,6 +547,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
+                    btnPaper.setDisable(true);
+                    btnRock.setDisable(true);
+                    btnScissors.setDisable(true);
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
                     endGame();
@@ -467,7 +565,7 @@ public class Main extends Application {
         btnCloseWindowGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
         btnPlayGameAgain.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGameAgain);
 
-        HBox hboxButtons = new HBox(btnPaper, btnRock, btnScissors);//, btnCloseWindow, btnPlayGameAgain);
+        HBox hboxButtons = new HBox(btnPaper, btnRock, btnScissors);
         hboxButtons.setSpacing(5);
         hboxButtons.setPadding(new Insets(550, 0, 0, 30));
 
@@ -528,7 +626,7 @@ public class Main extends Application {
 
     }
 
-    Stage helpStageEndGame = new Stage();
+
 
     public void endGame() {
 
@@ -572,6 +670,19 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
+
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+/*                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;              */
+
                     helpStageEndGame.close();
                     primaryStage.close();
                     stage.close();
@@ -586,6 +697,14 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
+
+                    if( ( numberOfRounds.getNumber().intValue() != resultPlayerHuman ) && ( numberOfRounds.getNumber().intValue() != resultPlayerComputer ) )
+                    {
+                        btnPaper.setDisable(false);
+                        btnRock.setDisable(false);
+                        btnScissors.setDisable(false);
+                    }
+
                     btnPlayGame.setDisable(false);
                     btnCloseWindowForm.setDisable(false);
                     btnCloseWindowGame.setDisable(false);
@@ -605,7 +724,7 @@ public class Main extends Application {
 
     }
 
-    Stage helpStageGameAgain = new Stage();
+
 
     public void playGameAgain() {
 
@@ -649,8 +768,19 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
-                    //userName.setText("");
-                    //numberOfRounds.setNumber();
+
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+/*                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
+                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;              */
+
                     btnCloseWindowGame.setDisable(false);
                     btnPlayGameAgain.setDisable(false);
                     helpStageGameAgain.close();
@@ -668,6 +798,14 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
                 try {
+
+                    if( ( numberOfRounds.getNumber().intValue() != resultPlayerHuman ) && ( numberOfRounds.getNumber().intValue() != resultPlayerComputer ) )
+                    {
+                        btnPaper.setDisable(false);
+                        btnRock.setDisable(false);
+                        btnScissors.setDisable(false);
+                    }
+
                     btnCloseWindowGame.setDisable(false);
                     btnPlayGameAgain.setDisable(false);
                     helpStageGameAgain.close();
@@ -685,18 +823,26 @@ public class Main extends Application {
 
     }
 
+
+
     public void SaveResults(int numberOfRoundsHuman, int numberOfRoundsComputer) {
         totalNumberOfRoundsHuman += numberOfRoundsHuman;
         totalNumberOfRoundsComputer += numberOfRoundsComputer;
     }
 
+
+
     public int returnTotalNumberOfRoundsHuman() {
         return totalNumberOfRoundsHuman;
     }
 
+
+
     public int returnTotalNumberOfRoundsComputer() {
         return totalNumberOfRoundsComputer;
     }
+
+
 
     public static void main(String[] args) {
         launch(args);
