@@ -25,10 +25,42 @@ import javafx.scene.text.FontWeight;
 
 public class Main extends Application {
 
+
+
+    int resultPlayerHuman = 0;
+    int resultPlayerComputer = 0;
+
+    int totalNumberOfRoundsHuman = 0;
+    int totalNumberOfRoundsComputer = 0;
+
+    int resultTotalNumberOfRoundsHuman = 0;
+    int resultTotalNumberOfRoundsComputer = 0;
+
+    int totalResultNumberOfRoundsHuman = 0;
+    int totalResultNumberOfRoundsComputer = 0;
+
+    NumberSpinner numberOfRounds = new NumberSpinner();
+
     @Override
     public void start(Stage primaryStage) throws Exception{
 
         try {
+
+            resultPlayerHuman = 0;
+            resultPlayerComputer = 0;
+
+            totalNumberOfRoundsHuman = 0;
+            totalNumberOfRoundsComputer = 0;
+
+            resultTotalNumberOfRoundsHuman = 0;
+            resultTotalNumberOfRoundsComputer = 0;
+
+            totalResultNumberOfRoundsHuman = 0;
+            totalResultNumberOfRoundsComputer = 0;
+
+            ZeroSavedResults();
+
+            numberOfRounds.setNumber(0);
 
             showLoginScreen();
 
@@ -45,7 +77,6 @@ public class Main extends Application {
     Button btnCloseWindowForm = new Button();
 
     LimitSpinner userName = new LimitSpinner();
-    NumberSpinner numberOfRounds = new NumberSpinner();
 
     int numberOfRoundsWin = 0;
 
@@ -54,19 +85,7 @@ public class Main extends Application {
     int executedMovePlayer = 0;
     int executedMoveComputer = 0;
 
-    int resultPlayerHuman = 0;
-    int resultPlayerComputer = 0;
-
-    int totalNumberOfRoundsHuman = 0;
-    int totalNumberOfRoundsComputer = 0;
-
     PlayerComputer pC = new PlayerComputer();
-
-    int resultTotalNumberOfRoundsHuman = 0;
-    int resultTotalNumberOfRoundsComputer = 0;
-
-    int totalResultNumberOfRoundsHuman = 0;
-    int totalResultNumberOfRoundsComputer = 0;
 
     String winnerRound = "";
 
@@ -95,6 +114,8 @@ public class Main extends Application {
 
         totalResultNumberOfRoundsHuman = 0;
         totalResultNumberOfRoundsComputer = 0;
+
+        ZeroSavedResults();
 
         userName.setText();
 
@@ -125,15 +146,13 @@ public class Main extends Application {
         labelNumber.setTextFill(Color.RED);
         labelNumber.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
-
-
-        Image imageIconPlayGame = new Image( getClass().getResourceAsStream("\\icons\\button-play.png") );
+        Image imageIconPlayGame = new Image( getClass().getResourceAsStream("icons/button-play.png") );
         ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
         imageViewIconPlayGame.setFitHeight(50);
         imageViewIconPlayGame.setFitWidth(100);
         btnPlayGame.setGraphic(imageViewIconPlayGame);
 
-        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
+        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("icons/button-close.png"));
         ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
         btnCloseWindowForm.setGraphic(imageViewIconCloseWindow);
         imageViewIconCloseWindow.setFitHeight(50);
@@ -146,7 +165,7 @@ public class Main extends Application {
                     if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 && numberOfRounds.getNumber().intValue() < 100 ) {
                         stage.close();
 
-/*                        resultPlayerHuman = 0;
+                        resultPlayerHuman = 0;
                         resultPlayerComputer = 0;
 
                         totalNumberOfRoundsHuman = 0;
@@ -156,12 +175,15 @@ public class Main extends Application {
                         resultTotalNumberOfRoundsComputer = 0;
 
                         totalResultNumberOfRoundsHuman = 0;
-                        totalResultNumberOfRoundsComputer = 0;                      */
+                        totalResultNumberOfRoundsComputer = 0;
+
+                        ZeroSavedResults();
+
                         numberOfRoundsWin = numberOfRounds.getNumber().intValue();
 //                        playGame(userName.getText(), numberOfRounds.getNumber().intValue());
                         playGame(userName.getText());
                     }
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -176,7 +198,7 @@ public class Main extends Application {
                     btnPlayGame.setDisable(true);
                     btnCloseWindowForm.setDisable(true);
                     endGame();
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -231,13 +253,15 @@ public class Main extends Application {
         totalNumberOfRoundsHuman = 0;
         totalNumberOfRoundsComputer = 0;
 
-/*        resultTotalNumberOfRoundsHuman = 0;
-        resultTotalNumberOfRoundsComputer = 0;              */
+        resultTotalNumberOfRoundsHuman = 0;
+        resultTotalNumberOfRoundsComputer = 0;
 
         totalResultNumberOfRoundsHuman = 0;
         totalResultNumberOfRoundsComputer = 0;
 
-        Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("\\icons\\Player-Computer.png"));
+        ZeroSavedResults();
+
+        Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("icons/Player-Computer.png"));
         ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
         imageViewIconPlayerComputer.setFitHeight(150);
         imageViewIconPlayerComputer.setFitWidth(150);
@@ -246,7 +270,7 @@ public class Main extends Application {
         HBox hboxPlayerComputer = new HBox(imageViewIconPlayerComputer);
         hboxPlayerComputer.setPadding(new Insets(15, 0, 0, 830));
 
-        Image imageIconPlayerPerson = new Image(getClass().getResourceAsStream("\\icons\\Player-Person.png"));
+        Image imageIconPlayerPerson = new Image(getClass().getResourceAsStream("icons/Player-Person.png"));
         ImageView imageViewIconPlayerPerson = new ImageView(imageIconPlayerPerson);
         imageViewIconPlayerPerson.setFitHeight(150);
         imageViewIconPlayerPerson.setFitWidth(100);
@@ -290,31 +314,31 @@ public class Main extends Application {
         imageViewIconMoveComputer.setFitWidth(300);
         imageViewIconMoveComputer.setFitHeight(300);
 
-        Image imageIconPaper = new Image(getClass().getResourceAsStream("\\icons\\paper.png"));
+        Image imageIconPaper = new Image(getClass().getResourceAsStream("icons/paper.png"));
         ImageView imageViewIconPaper = new ImageView(imageIconPaper);
         btnPaper.setGraphic(imageViewIconPaper);
         imageViewIconPaper.setFitHeight(100);
         imageViewIconPaper.setFitWidth(100);
 
-        Image imageIconRock = new Image(getClass().getResourceAsStream("\\icons\\rock.png"));
+        Image imageIconRock = new Image(getClass().getResourceAsStream("icons/rock.png"));
         ImageView imageViewIconRock = new ImageView(imageIconRock);
         btnRock.setGraphic(imageViewIconRock);
         imageViewIconRock.setFitHeight(100);
         imageViewIconRock.setFitWidth(100);
 
-        Image imageIconScissors = new Image(getClass().getResourceAsStream("\\icons\\scissors.jpg"));
+        Image imageIconScissors = new Image(getClass().getResourceAsStream("icons/scissors.jpg"));
         ImageView imageViewIconScissors = new ImageView(imageIconScissors);
         btnScissors.setGraphic(imageViewIconScissors);
         imageViewIconScissors.setFitHeight(100);
         imageViewIconScissors.setFitWidth(100);
 
-        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("\\icons\\button-close.png"));
+        Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("icons/button-close.png"));
         ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
         btnCloseWindowGame.setGraphic(imageViewIconCloseWindow);
         imageViewIconCloseWindow.setFitHeight(50);
         imageViewIconCloseWindow.setFitWidth(50);
 
-        Image imageIconPlayGame = new Image(getClass().getResourceAsStream("\\icons\\play_again_button.png"));
+        Image imageIconPlayGame = new Image(getClass().getResourceAsStream("icons/play_again_button.png"));
         ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
         btnPlayGameAgain.setGraphic(imageViewIconPlayGame);
         imageViewIconPlayGame.setFitHeight(50);
@@ -330,17 +354,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 
-/*                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;               */
-
-                totalNumberOfRoundsHuman = 0;
-                totalNumberOfRoundsComputer = 0;
-
-                resultTotalNumberOfRoundsHuman = 0;
-                resultTotalNumberOfRoundsComputer = 0;
-
-                totalResultNumberOfRoundsHuman = 0;
-                totalResultNumberOfRoundsComputer = 0;
+                    ZeroSavedResults();
 
                 executedMoveComputer = pC.executeMove();
 
@@ -374,8 +388,24 @@ public class Main extends Application {
                 if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;              */
+
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
@@ -383,13 +413,31 @@ public class Main extends Application {
                 } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;                  */
+
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 }
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
             }
         };
 
@@ -397,17 +445,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 
-/*                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;               */
-
-                totalNumberOfRoundsHuman = 0;
-                totalNumberOfRoundsComputer = 0;
-
-                resultTotalNumberOfRoundsHuman = 0;
-                resultTotalNumberOfRoundsComputer = 0;
-
-                totalResultNumberOfRoundsHuman = 0;
-                totalResultNumberOfRoundsComputer = 0;
+                    ZeroSavedResults();
 
                 executedMoveComputer = pC.executeMove();
 
@@ -441,8 +479,24 @@ public class Main extends Application {
                 if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
+
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;          */
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
@@ -450,13 +504,31 @@ public class Main extends Application {
                 } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
+
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;              */
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 }
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
             }
         };
 
@@ -464,17 +536,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 
-/*                resultPlayerHuman = 0;
-                resultPlayerComputer = 0;               */
-
-                totalNumberOfRoundsHuman = 0;
-                totalNumberOfRoundsComputer = 0;
-
-                resultTotalNumberOfRoundsHuman = 0;
-                resultTotalNumberOfRoundsComputer = 0;
-
-                totalResultNumberOfRoundsHuman = 0;
-                totalResultNumberOfRoundsComputer = 0;
+                    ZeroSavedResults();
 
                 executedMoveComputer = pC.executeMove();
 
@@ -508,8 +570,24 @@ public class Main extends Application {
                 if( totalResultNumberOfRoundsHuman == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win player "+userName+"!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
+
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;          */
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
@@ -517,13 +595,33 @@ public class Main extends Application {
                 } else if( totalResultNumberOfRoundsComputer == numberOfRoundsWin ) {
                     currentResultsGame.setText("Game win Computer!\n" + userName + " -> " + resultPlayerHuman + "   " + "Computer -> " + resultPlayerComputer);
 
+                    resultPlayerHuman = 0;
+                    resultPlayerComputer = 0;
+
+                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsComputer = 0;
+
+                    resultTotalNumberOfRoundsHuman = 0;
+                    resultTotalNumberOfRoundsComputer = 0;
+
                     totalResultNumberOfRoundsHuman = 0;
                     totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
+
+/*                    totalResultNumberOfRoundsHuman = 0;
+                    totalResultNumberOfRoundsComputer = 0;          */
 
                     btnPaper.setDisable(true);
                     btnRock.setDisable(true);
                     btnScissors.setDisable(true);
                 }
+
+                totalResultNumberOfRoundsHuman = 0;
+                totalResultNumberOfRoundsComputer = 0;
+
             }
         };
 
@@ -537,7 +635,7 @@ public class Main extends Application {
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
                     playGameAgain();
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -553,7 +651,7 @@ public class Main extends Application {
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
                     endGame();
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -647,14 +745,14 @@ public class Main extends Application {
         labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Button btnYes = new Button();
-        Image imageIconYes = new Image(getClass().getResourceAsStream("\\icons\\button-yes.png"));
+        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
         ImageView imageViewIconYes = new ImageView(imageIconYes);
         btnYes.setGraphic(imageViewIconYes);
         imageViewIconYes.setFitHeight(50);
         imageViewIconYes.setFitWidth(50);
 
         Button btnNo = new Button();
-        Image imageIconNo = new Image(getClass().getResourceAsStream("\\icons\\button-no.png"));
+        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
         ImageView imageViewIconNo = new ImageView(imageIconNo);
         btnNo.setGraphic(imageViewIconNo);
         imageViewIconNo.setFitHeight(50);
@@ -674,19 +772,24 @@ public class Main extends Application {
                     resultPlayerHuman = 0;
                     resultPlayerComputer = 0;
 
-/*                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsHuman = 0;
                     totalNumberOfRoundsComputer = 0;
 
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
 
                     totalResultNumberOfRoundsHuman = 0;
-                    totalResultNumberOfRoundsComputer = 0;              */
+                    totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
 
                     helpStageEndGame.close();
                     primaryStage.close();
                     stage.close();
-                } catch(NumberFormatException ex) {
+
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -710,7 +813,7 @@ public class Main extends Application {
                     btnCloseWindowGame.setDisable(false);
                     btnPlayGameAgain.setDisable(false);
                     helpStageEndGame.close();
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -745,14 +848,14 @@ public class Main extends Application {
         labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Button btnYes = new Button();
-        Image imageIconYes = new Image(getClass().getResourceAsStream("\\icons\\button-yes.png"));
+        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
         ImageView imageViewIconYes = new ImageView(imageIconYes);
         btnYes.setGraphic(imageViewIconYes);
         imageViewIconYes.setFitHeight(50);
         imageViewIconYes.setFitWidth(50);
 
         Button btnNo = new Button();
-        Image imageIconNo = new Image(getClass().getResourceAsStream("\\icons\\button-no.png"));
+        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
         ImageView imageViewIconNo = new ImageView(imageIconNo);
         btnNo.setGraphic(imageViewIconNo);
         imageViewIconNo.setFitHeight(50);
@@ -772,22 +875,33 @@ public class Main extends Application {
                     resultPlayerHuman = 0;
                     resultPlayerComputer = 0;
 
-/*                    totalNumberOfRoundsHuman = 0;
+                    totalNumberOfRoundsHuman = 0;
                     totalNumberOfRoundsComputer = 0;
 
                     resultTotalNumberOfRoundsHuman = 0;
                     resultTotalNumberOfRoundsComputer = 0;
 
                     totalResultNumberOfRoundsHuman = 0;
-                    totalResultNumberOfRoundsComputer = 0;              */
+                    totalResultNumberOfRoundsComputer = 0;
+
+                    ZeroSavedResults();
+
+                    numberOfRounds.setNumber(0);
 
                     btnCloseWindowGame.setDisable(false);
                     btnPlayGameAgain.setDisable(false);
+
                     helpStageGameAgain.close();
                     stage.close();
                     primaryStage.close();
-                    showLoginScreen();
-                } catch(NumberFormatException ex) {
+
+                    Stage renewStage = new Stage();
+
+                    start(renewStage);
+
+                    //showLoginScreen();
+
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -809,7 +923,7 @@ public class Main extends Application {
                     btnCloseWindowGame.setDisable(false);
                     btnPlayGameAgain.setDisable(false);
                     helpStageGameAgain.close();
-                } catch(NumberFormatException ex) {
+                } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -840,6 +954,13 @@ public class Main extends Application {
 
     public int returnTotalNumberOfRoundsComputer() {
         return totalNumberOfRoundsComputer;
+    }
+
+
+
+    public void ZeroSavedResults() {
+        totalNumberOfRoundsHuman = 0;
+        totalNumberOfRoundsComputer = 0;
     }
 
 
