@@ -1,5 +1,7 @@
+
 package sample;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Login {
 
@@ -44,6 +47,8 @@ public class Login {
 
     Stage stage = new Stage();
 
+    Stage helpStageEndGame = new Stage();
+
     Button btnPlayGame = new Button();
 
     Button btnCloseWindowForm = new Button();
@@ -58,16 +63,15 @@ public class Login {
     VBox box = new VBox();
     Scene scene = new Scene(box, 400, 400);
 
-    public void showLoginScreen() {
 
-//        ZeroSavedResults();
+    public void showLoginScreen() {
+        stage.setOnCloseRequest(e -> Platform.exit());
 
         root.setAlignment(Pos.CENTER);
 
         userName.setText();
 
         stage.setResizable(false);
-//        stage.initStyle(StageStyle.UNDECORATED);
 
         label.setFont(font);
         label.setTextFill(Color.RED);
@@ -89,27 +93,28 @@ public class Login {
         imageViewIconCloseWindow.setFitHeight(50);
         imageViewIconCloseWindow.setFitWidth(50);
 
+        Game g = new Game();
+
+        stage.initStyle(StageStyle.UNDECORATED);
+
+        helpStageEndGame.initStyle(StageStyle.UNDECORATED);
+
         EventHandler<MouseEvent> eventHandlerPlayGame = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+                uN = userName.getText();
+                numberOfRoundsWin = numberOfRounds.getNumber().intValue();
+
                 try {
-                    if( !userName.getText().equals("") && numberOfRounds.getNumber().intValue() > 0 && numberOfRounds.getNumber().intValue() < 100 ) {
-                        stage.close();
-
-                        uN = userName.getText();
-                        numberOfRoundsWin = numberOfRounds.getNumber().intValue();
-
-                        Game g = new Game();
-
+                    if( !uN.equals("") && numberOfRoundsWin > 0 && numberOfRoundsWin < 100 ) {
                         g.playGame(uN, numberOfRoundsWin);
-
+                        stage.close();
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
         };
-
         btnPlayGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGame);
 
         EventHandler<MouseEvent> eventHandlerCloseWindow = new EventHandler<MouseEvent>() {
@@ -118,13 +123,12 @@ public class Login {
                 try {
                     btnPlayGame.setDisable(true);
                     btnCloseWindowForm.setDisable(true);
-//                    endGame();
+                    endLogin(numberOfRoundsWin);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
         };
-
         btnCloseWindowForm.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
 
         hboxUserName.setSpacing(30);
@@ -152,6 +156,78 @@ public class Login {
         box.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
 
         stage.show();
+    }
+
+    public void endLogin(int wonRounds) {
+        helpStageEndGame.setOnCloseRequest(e -> Platform.exit());
+
+        helpStageEndGame.setResizable(false);
+
+        StackPane root = new StackPane();
+
+        Scene scene = new Scene(root,400,150);
+
+        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+
+        Label labelAsk = new Label();
+        labelAsk.setText("Are you sure you want to end the game?");
+        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
+        labelAsk.setFont(font);
+        labelAsk.setTextFill(Color.RED);
+        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Button btnYes = new Button();
+        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
+        ImageView imageViewIconYes = new ImageView(imageIconYes);
+        btnYes.setGraphic(imageViewIconYes);
+        imageViewIconYes.setFitHeight(50);
+        imageViewIconYes.setFitWidth(50);
+
+        Button btnNo = new Button();
+        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
+        ImageView imageViewIconNo = new ImageView(imageIconNo);
+        btnNo.setGraphic(imageViewIconNo);
+        imageViewIconNo.setFitHeight(50);
+        imageViewIconNo.setFitWidth(50);
+
+        HBox hBoxlabelAsk = new HBox(labelAsk);
+        HBox hBoxbtns = new HBox(btnYes, btnNo);
+        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 45));
+        hBoxbtns.setSpacing(50);
+        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
+
+        EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    stage.close();
+                    helpStageEndGame.close();
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnYes.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerYes);
+
+        EventHandler<MouseEvent> eventHandlerNo = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try {
+                    btnPlayGame.setDisable(false);
+                    btnCloseWindowForm.setDisable(false);
+                    helpStageEndGame.close();
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
+
+        root.getChildren().add(hBoxlabelAsk);
+        root.getChildren().add(hBoxbtns);
+
+        helpStageEndGame.setScene(scene);
+        helpStageEndGame.show();
 
     }
 
