@@ -22,6 +22,8 @@ import javafx.stage.StageStyle;
 public class Game {
     private Stage primaryStage = new Stage();
 
+    HelpClass hc = new HelpClass();
+
     int resultPlayerHuman = 0;
     int resultPlayerComputer = 0;
 
@@ -359,10 +361,8 @@ public class Game {
         helpStageEndGame.setResizable(false);
 
         StackPane root = new StackPane();
-
         Scene scene = new Scene(root,400,150);
-
-        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+        root = hc.showWindowBtnYesNo(root);
 
         Label labelAsk = new Label();
         labelAsk.setText("Are you sure you want to end the game?");
@@ -440,7 +440,8 @@ public class Game {
 
         StackPane root = new StackPane();
         Scene scene = new Scene(root,400,150);
-        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+//        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
+        root = hc.showWindowBtnYesNo(root);
 
         Label labelAsk = new Label();
         labelAsk.setText("Are you sure you want to end the current game?");

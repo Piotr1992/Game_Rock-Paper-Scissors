@@ -1,7 +1,6 @@
 
 package sample;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,26 +19,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Login {
+    HelpClass hc = new HelpClass();
 
-    StackPane root = new StackPane();
+    Label label = hc.setLabel(  "Fill in the data below!",  Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 30)    );
+    Label labelUserName = hc.setLabel(  "Input your name:",     Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15)   );
+    Label labelNumber = hc.setLabel(    "Input number won rounds from range [1 - 99]:",     Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15)    );
 
-    Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 30);
-
-    Label label = new Label("Fill in the data below!");
-
-    Font fontUserNameNumber = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 15);
-
-    Label labelUserName = new Label("Input your name:");
-
-    Label labelNumber = new Label("Input number won rounds from range [1 - 99]:");
-
-    Image imageIconPlayGame = new Image( getClass().getResourceAsStream("icons/button-play.png") );
-
-    ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
-
-    Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("icons/button-close.png"));
-
-    ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
+    ImageView imageViewIconPlayGame = hc.setImageView(  new Image( getClass().getResourceAsStream("icons/button-play.png") ), 50, 100   );
+    ImageView imageViewIconCloseWindow = hc.setImageView(   new Image(getClass().getResourceAsStream("icons/button-close.png")), 50, 50    );
 
     LimitSpinner userName = new LimitSpinner();
 
@@ -57,45 +44,19 @@ public class Login {
 
     int numberOfRoundsWin = 0;
 
-    HBox hboxUserName = new HBox(labelUserName, userName);
-    HBox hboxNumber = new HBox(labelNumber, numberOfRounds);
-    HBox hboxPlayClosebtns = new HBox(btnPlayGame, btnCloseWindowForm);
     VBox box = new VBox();
+
     Scene scene = new Scene(box, 400, 400);
 
-
     public void showLoginScreen() {
-        stage.setOnCloseRequest(e -> Platform.exit());
-
-        root.setAlignment(Pos.CENTER);
 
         userName.setText();
 
-        stage.setResizable(false);
-
-        label.setFont(font);
-        label.setTextFill(Color.RED);
-        label.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        labelUserName.setFont(fontUserNameNumber);
-        labelUserName.setTextFill(Color.RED);
-        labelUserName.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        labelNumber.setFont(fontUserNameNumber);
-        labelNumber.setTextFill(Color.RED);
-        labelNumber.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        imageViewIconPlayGame.setFitHeight(50);
-        imageViewIconPlayGame.setFitWidth(100);
         btnPlayGame.setGraphic(imageViewIconPlayGame);
 
         btnCloseWindowForm.setGraphic(imageViewIconCloseWindow);
-        imageViewIconCloseWindow.setFitHeight(50);
-        imageViewIconCloseWindow.setFitWidth(50);
 
         Game g = new Game();
-
-        stage.initStyle(StageStyle.UNDECORATED);
 
         helpStageEndGame.initStyle(StageStyle.UNDECORATED);
 
@@ -131,15 +92,6 @@ public class Login {
         };
         btnCloseWindowForm.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
 
-        hboxUserName.setSpacing(30);
-        hboxUserName.setPadding(new Insets(10, 0, 0, 10));
-
-        hboxNumber.setSpacing(30);
-        hboxNumber.setPadding(new Insets(10, 0, 0, 10));
-
-        hboxPlayClosebtns.setSpacing(100);
-        hboxPlayClosebtns.setPadding(new Insets(10, 0, 0, 50));
-
         box.setPadding(new Insets(10));
 
         box.setAlignment(Pos.CENTER);
@@ -147,54 +99,29 @@ public class Login {
         box.setSpacing(30);
 
         box.getChildren().add(label);
-        box.getChildren().add(hboxUserName);
-        box.getChildren().add(hboxNumber);
-        box.getChildren().add(hboxPlayClosebtns);
-
-        stage.setScene(scene);
+        box.getChildren().add( hc.setHBox( new HBox(labelUserName, userName), 30, 10, 0, 0, 10 ) );
+        box.getChildren().add( hc.setHBox( new HBox(labelNumber, numberOfRounds), 30, 10, 0, 0, 10 ) );
+        box.getChildren().add( hc.setHBox( new HBox(btnPlayGame, btnCloseWindowForm), 100, 10, 0, 0, 50 ) );
 
         box.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
 
-        stage.show();
+        stage = hc.setStage(scene, stage);
+
     }
 
     public void endLogin(int wonRounds) {
-        helpStageEndGame.setOnCloseRequest(e -> Platform.exit());
-
-        helpStageEndGame.setResizable(false);
 
         StackPane root = new StackPane();
-
         Scene scene = new Scene(root,400,150);
+        root = hc.showWindowBtnYesNo(root);
 
-        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
-
-        Label labelAsk = new Label();
-        labelAsk.setText("Are you sure you want to end the game?");
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
-        labelAsk.setFont(font);
-        labelAsk.setTextFill(Color.RED);
-        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        Label labelAsk = hc.setLabel(  "Are you sure you want to end the game?",  Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18)    );
 
         Button btnYes = new Button();
-        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
-        ImageView imageViewIconYes = new ImageView(imageIconYes);
-        btnYes.setGraphic(imageViewIconYes);
-        imageViewIconYes.setFitHeight(50);
-        imageViewIconYes.setFitWidth(50);
+        btnYes = hc.setButton(btnYes, hc.setImageView(   new Image(getClass().getResourceAsStream("icons/button-yes.png")), 50, 50    ));
 
         Button btnNo = new Button();
-        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
-        ImageView imageViewIconNo = new ImageView(imageIconNo);
-        btnNo.setGraphic(imageViewIconNo);
-        imageViewIconNo.setFitHeight(50);
-        imageViewIconNo.setFitWidth(50);
-
-        HBox hBoxlabelAsk = new HBox(labelAsk);
-        HBox hBoxbtns = new HBox(btnYes, btnNo);
-        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 45));
-        hBoxbtns.setSpacing(50);
-        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
+        btnNo = hc.setButton(btnNo, hc.setImageView(   new Image(getClass().getResourceAsStream("icons/button-no.png")), 50, 50    ));
 
         EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
             @Override
@@ -223,12 +150,11 @@ public class Login {
         };
         btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
 
-        root.getChildren().add(hBoxlabelAsk);
-        root.getChildren().add(hBoxbtns);
+        root.getChildren().add( hc.setHBox( new HBox(labelAsk), 0, 25, 0, 0, 45 ) );
 
-        helpStageEndGame.setScene(scene);
-        helpStageEndGame.show();
+        root.getChildren().add( hc.setHBox( new HBox(btnYes, btnNo), 50, 75, 0, 0, 100 ) );
 
+        helpStageEndGame = hc.setHelpStage(scene, helpStageEndGame);
     }
 
 }
