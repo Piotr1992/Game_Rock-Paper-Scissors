@@ -1,7 +1,6 @@
 
 package sample;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -21,150 +20,77 @@ import javafx.stage.StageStyle;
 
 public class Game {
     private Stage primaryStage = new Stage();
-
-    HelpClass hc = new HelpClass();
-
-    int resultPlayerHuman = 0;
-    int resultPlayerComputer = 0;
-
-    int totalResultNumberOfRoundsHuman = 0;
-    int totalResultNumberOfRoundsComputer = 0;
-
-    int executedMovePlayer = 0;
-    int executedMoveComputer = 0;
-
-    PlayerComputer pC = new PlayerComputer();
-
-    String winnerRound = "";
-
-    Button btnPaper = new Button();
-    Button btnRock = new Button();
-    Button btnScissors = new Button();
-
-    Button btnCloseWindowGame = new Button();
-
-    Button btnCloseWindowForm = new Button();
-
-    Button btnPlayGame = new Button();
-
-    Button btnPlayGameAgain = new Button();
-
-    Stage helpStageEndGame = new Stage();
-
-    Stage stage = new Stage();
-
-    Stage helpStageGameAgain = new Stage();
-
-    Image imageIconMovePlayer = new Image(getClass().getResourceAsStream(""));
-    ImageView imageViewIconMovePlayer = new ImageView(imageIconMovePlayer);
-
-    Image imageIconMoveComputer = new Image(getClass().getResourceAsStream(""));
-    ImageView imageViewIconMoveComputer = new ImageView(imageIconMoveComputer);
-
-    Image imageIconPaper = new Image(getClass().getResourceAsStream("icons/paper.png"));
-    ImageView imageViewIconPaper = new ImageView(imageIconPaper);
-
-    Image imageIconRock = new Image(getClass().getResourceAsStream("icons/rock.png"));
-    ImageView imageViewIconRock = new ImageView(imageIconRock);
-
-    Image imageIconScissors = new Image(getClass().getResourceAsStream("icons/scissors.jpg"));
-    ImageView imageViewIconScissors = new ImageView(imageIconScissors);
-
-    Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("icons/button-close.png"));
-    ImageView imageViewIconCloseWindow = new ImageView(imageIconCloseWindow);
-
-    Image imageIconPlayGame = new Image(getClass().getResourceAsStream("icons/play-again-button.png"));
-    ImageView imageViewIconPlayGame = new ImageView(imageIconPlayGame);
-
-    Label currentResultsGame = new Label();
+    private HelpClass hc = new HelpClass();
+    private int resultPlayerHuman = 0;
+    private int resultPlayerComputer = 0;
+    private int totalResultNumberOfRoundsHuman = 0;
+    private int totalResultNumberOfRoundsComputer = 0;
+    private int executedMoveComputer = 0;
+    private PlayerComputer pC = new PlayerComputer();
+    private Button btnPaper = new Button();
+    private Button btnRock = new Button();
+    private Button btnScissors = new Button();
+    private Button btnCloseWindowGame = new Button();
+    private Button btnPlayGameAgain = new Button();
+    private Stage helpStageEndGame = new Stage();
+    private Stage helpStageGameAgain = new Stage();
+    private ImageView imageViewIconMovePlayer = hc.setImageView(  new Image( getClass().getResourceAsStream("") ), 300, 300   );
+    private ImageView imageViewIconMoveComputer = hc.setImageView(  new Image( getClass().getResourceAsStream("") ), 300, 300   );
+    private Image imageIconPaper = new Image(getClass().getResourceAsStream("icons/paper.png"));
+    private ImageView imageViewIconPaper = hc.setImageView(  imageIconPaper, 100, 100   );
+    private Image imageIconRock = new Image(getClass().getResourceAsStream("icons/rock.png"));
+    private ImageView imageViewIconRock = hc.setImageView(  imageIconRock, 100, 100   );
+    private Image imageIconScissors = new Image(getClass().getResourceAsStream("icons/scissors.jpg"));
+    private ImageView imageViewIconScissors = hc.setImageView(  imageIconScissors, 100, 100   );
+    private Image imageIconCloseWindow = new Image(getClass().getResourceAsStream("icons/button-close.png"));
+    private ImageView imageViewIconCloseWindow = hc.setImageView(  imageIconCloseWindow, 50, 50   );
+    private Image imageIconPlayGame = new Image(getClass().getResourceAsStream("icons/play-again-button.png"));
+    private ImageView imageViewIconPlayGame = hc.setImageView(  imageIconPlayGame, 50, 150   );
+    private Label currentResultsGame = new Label();
+    private int executedMovePlayer = 0;
+    private String winnerRound = "";
+    private HBox hboxRect = hc.setHBox( new HBox(imageViewIconMovePlayer, imageViewIconMoveComputer), 50, 175, 0, 0, 150 );
+    private HBox hboxPlayerComputer = new HBox();
+    HBox hboxPlayerPerson = new HBox();
+    HBox hboxInfoMovesUser = new HBox();
+    HBox hboxlabelUserName = new HBox();
+    HBox hboxlabelComputer = new HBox();
+    Font font30ArialBlack = Font.font("Arial Black", FontWeight.BOLD, FontPosture.ITALIC, 30);
+    Font font18Calibri = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
 
     public void playGame(String user, int wonRounds) throws Exception{
-
-        primaryStage.setOnCloseRequest(e -> Platform.exit());
-
-        primaryStage.setResizable(false);
-        primaryStage.initStyle(StageStyle.UNDECORATED);
         helpStageEndGame.initStyle(StageStyle.UNDECORATED);
         helpStageGameAgain.initStyle(StageStyle.UNDECORATED);
-
-        Image imageIconPlayerComputer = new Image(getClass().getResourceAsStream("icons/computer.png"));
-        ImageView imageViewIconPlayerComputer = new ImageView(imageIconPlayerComputer);
-        imageViewIconPlayerComputer.setFitHeight(150);
-        imageViewIconPlayerComputer.setFitWidth(150);
-        imageViewIconPlayerComputer.setLayoutX(200);
-        imageViewIconPlayerComputer.setLayoutY(50);
-        HBox hboxPlayerComputer = new HBox(imageViewIconPlayerComputer);
-        hboxPlayerComputer.setPadding(new Insets(15, 0, 0, 830));
-
-        Image imageIconPlayerPerson = new Image(getClass().getResourceAsStream("icons/person.png"));
-        ImageView imageViewIconPlayerPerson = new ImageView(imageIconPlayerPerson);
-        imageViewIconPlayerPerson.setFitHeight(150);
-        imageViewIconPlayerPerson.setFitWidth(100);
-        imageViewIconPlayerPerson.setLayoutX(200);
-        imageViewIconPlayerPerson.setLayoutY(50);
-        HBox hboxPlayerPerson = new HBox(imageViewIconPlayerPerson);
-        hboxPlayerPerson.setPadding(new Insets(15, 0, 0, 20));
-
-        Label labelUserName = new Label();
-        labelUserName.setText(user);
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
-        labelUserName.setFont(font);
-        labelUserName.setTextFill(Color.RED);
-        labelUserName.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-        HBox hboxlabelUserName = new HBox(labelUserName);
-        hboxlabelUserName.setPadding(new Insets(180, 0, 0, 50));
-
-        Label labelComputer = new Label();
-        labelComputer.setText("Computer");
-        labelComputer.setFont(font);
-        labelComputer.setTextFill(Color.RED);
-        labelComputer.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-        HBox hboxlabelComputer = new HBox(labelComputer);
-        hboxlabelComputer.setPadding(new Insets(180, 0, 0, 870));
-
-        Label infoMovesUser = new Label();
-        infoMovesUser.setText("Below are three moves. Click one from them!");
-        infoMovesUser.setFont(font);
-        infoMovesUser.setTextFill(Color.RED);
-        infoMovesUser.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-        HBox hboxInfoMovesUser = new HBox(infoMovesUser);
-        hboxInfoMovesUser.setPadding(new Insets(520, 0, 0, 40));
-
-        imageViewIconMovePlayer.setFitWidth(300);
-        imageViewIconMovePlayer.setFitHeight(300);
-
-        imageViewIconMoveComputer.setFitWidth(300);
-        imageViewIconMoveComputer.setFitHeight(300);
-
+        if( user.length() <= 8 ) {
+            currentResultsGame = hc.setLabel("Limit won rounds: " + wonRounds + "\nPlayer \"" + user + "\" ever execute \nfirst move!", font30ArialBlack);
+        } else {
+            currentResultsGame = hc.setLabel("Limit won rounds: " + wonRounds + "\nPlayer \"" + user + "\" ever \nexecute first move!", font30ArialBlack);
+        }
+        ImageView imageViewIconPlayerComputer = hc.setImageViewPlayer(  new Image(getClass().getResourceAsStream("icons/computer.png")),
+                                                                        150, 150, 200, 50   );
+        ImageView imageViewIconPlayerPerson = hc.setImageViewPlayer(  new Image(getClass().getResourceAsStream("icons/person.png")),
+                                                                    150, 100, 200, 50   );
+        Label labelUserName = hc.setLabel(user, font18Calibri);
+        Label labelComputer = hc.setLabel("Computer", font18Calibri);
+        Label infoMovesUser = hc.setLabel("Below are three moves. Click one from them!", font18Calibri);
         btnPaper.setGraphic(imageViewIconPaper);
-        imageViewIconPaper.setFitHeight(100);
-        imageViewIconPaper.setFitWidth(100);
-
         btnRock.setGraphic(imageViewIconRock);
-        imageViewIconRock.setFitHeight(100);
-        imageViewIconRock.setFitWidth(100);
-
         btnScissors.setGraphic(imageViewIconScissors);
-        imageViewIconScissors.setFitHeight(100);
-        imageViewIconScissors.setFitWidth(100);
-
         btnCloseWindowGame.setGraphic(imageViewIconCloseWindow);
-        imageViewIconCloseWindow.setFitHeight(50);
-        imageViewIconCloseWindow.setFitWidth(50);
-
         btnPlayGameAgain.setGraphic(imageViewIconPlayGame);
-        imageViewIconPlayGame.setFitHeight(50);
-        imageViewIconPlayGame.setFitWidth(150);
-
         btnPaper.setDisable(false);
         btnRock.setDisable(false);
         btnScissors.setDisable(false);
+        hboxPlayerComputer = hc.setHBox( new HBox(imageViewIconPlayerComputer), 0, 15, 0, 0, 830 );
+        hboxPlayerPerson = hc.setHBox( new HBox(imageViewIconPlayerPerson), 0, 15, 0, 0, 20 );
+        hboxInfoMovesUser = hc.setHBox( new HBox(infoMovesUser), 0, 520, 0, 0, 40 );
+        hboxlabelUserName = hc.setHBox( new HBox(labelUserName), 0, 180, 0, 0, 15 );
+        hboxlabelComputer = new HBox( hc.setHBox( new HBox(labelComputer), 0, 180, 0, 0, 870 ) );
 
         EventHandler<MouseEvent> eventHandlerPaper = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 executedMoveComputer = pC.executeMove();
-
                 try {
                     imageViewIconMovePlayer.setImage(imageIconPaper);
                     executedMovePlayer = 2;
@@ -187,7 +113,6 @@ public class Game {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
                 displayResults(user, wonRounds, resultPlayerHuman, resultPlayerComputer);
             }
         };
@@ -196,7 +121,6 @@ public class Game {
             @Override
             public void handle(MouseEvent e) {
                 executedMoveComputer = pC.executeMove();
-
                 try {
                     imageViewIconMovePlayer.setImage(imageIconRock);
                     executedMovePlayer = 1;
@@ -219,7 +143,6 @@ public class Game {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
                 displayResults(user, wonRounds, resultPlayerHuman, resultPlayerComputer);
             }
         };
@@ -228,7 +151,6 @@ public class Game {
             @Override
             public void handle(MouseEvent e) {
                 executedMoveComputer = pC.executeMove();
-
                 try {
                     imageViewIconMovePlayer.setImage(imageIconScissors);
                     executedMovePlayer = 3;
@@ -251,7 +173,6 @@ public class Game {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
                 displayResults(user, wonRounds, resultPlayerHuman, resultPlayerComputer);
             }
         };
@@ -265,13 +186,15 @@ public class Game {
                     btnScissors.setDisable(true);
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
-                    playGameAgain(wonRounds);
+                    hc.showMessage( primaryStage, helpStageGameAgain, null, null,
+                                    btnPaper, btnRock, btnScissors, btnCloseWindowGame, btnPlayGameAgain,
+                                    wonRounds,"Are you sure you want to end the current game?", 3,
+                                    totalResultNumberOfRoundsHuman,  totalResultNumberOfRoundsComputer );
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             }
         };
-
         EventHandler<MouseEvent> eventHandlerCloseWindow = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -281,7 +204,10 @@ public class Game {
                     btnScissors.setDisable(true);
                     btnCloseWindowGame.setDisable(true);
                     btnPlayGameAgain.setDisable(true);
-                    endGame(wonRounds);
+                    hc.showMessage( primaryStage, helpStageEndGame, null, null,
+                            btnPaper, btnRock, btnScissors, btnCloseWindowGame, btnPlayGameAgain,
+                            wonRounds,"Are you sure you want to end the game?", 2,
+                            totalResultNumberOfRoundsHuman,  totalResultNumberOfRoundsComputer );
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
@@ -293,50 +219,15 @@ public class Game {
         btnScissors.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerScissors);
         btnCloseWindowGame.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerCloseWindow);
         btnPlayGameAgain.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerPlayGameAgain);
-
-        HBox hboxButtons = new HBox(btnPaper, btnRock, btnScissors);
-        hboxButtons.setSpacing(5);
-        hboxButtons.setPadding(new Insets(550, 0, 0, 30));
-
-        HBox hboxClosePlaybtns = new HBox(btnCloseWindowGame, btnPlayGameAgain);
-        hboxClosePlaybtns.setSpacing(50);
-        hboxClosePlaybtns.setPadding(new Insets(10, 0, 0, 350));
-
-        StackPane spButtonsMove = new StackPane();
-        spButtonsMove.getChildren().add(hboxButtons);
-        spButtonsMove.setPadding(new Insets(550, 0, 0, 30));
-        spButtonsMove.setTranslateX(50);
-        spButtonsMove.setTranslateY(50);
-
-        StackPane spButtonsClosePlay = new StackPane();
-        spButtonsClosePlay.getChildren().add(hboxClosePlaybtns);
-        spButtonsClosePlay.setPadding(new Insets(10, 0, 0, 350));
-
+        HBox hboxButtons = hc.setHBox(new HBox(btnPaper, btnRock, btnScissors), 5, 550, 0, 0, 30);
+        HBox hboxClosePlaybtns = hc.setHBox(new HBox(btnCloseWindowGame, btnPlayGameAgain), 50, 10, 0, 0, 350);
         Group firstGroup = new Group();
-        firstGroup.getChildren().add(hboxButtons);
-        firstGroup.setTranslateX(-310);
-        firstGroup.setTranslateY(-10);
-
-        Group sceondGroup = new Group();
-        sceondGroup.getChildren().add(hboxClosePlaybtns);
-        sceondGroup.setTranslateX(-200);
-        sceondGroup.setTranslateY(-300);
-
-        HBox hboxRect = new HBox(imageViewIconMovePlayer, imageViewIconMoveComputer);
-        hboxRect.setPadding(new Insets(175, 0, 0, 150));
-        hboxRect.setSpacing(50);
-
-        Font fontResultGame = Font.font("Arial Black", FontWeight.BOLD, FontPosture.ITALIC, 30);
-        currentResultsGame.setFont(fontResultGame);
-        currentResultsGame.setTextFill(Color.RED);
-        currentResultsGame.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-        currentResultsGame.setText("Limit won rounds: " + wonRounds + "\nPlayer " + user + " ever execute \nfirst move!");
-        HBox hboxCurrentResultsGame = new HBox(currentResultsGame);
-        hboxCurrentResultsGame.setPadding(new Insets(550, 50, 0, 450));
+        firstGroup = hc.setGroup(firstGroup, hboxButtons, -310, -10);
+        Group secondGroup = new Group();
+        secondGroup = hc.setGroup(secondGroup, hboxClosePlaybtns, -200, -300);
+        HBox hboxCurrentResultsGame = hc.setHBox( new HBox(currentResultsGame), 0, 550, 5, 0, 405 );
         hboxCurrentResultsGame.setFillHeight(true);
-
         StackPane root = new StackPane();
-
         root.getChildren().add(hboxRect);
         root.getChildren().add(hboxPlayerComputer);
         root.getChildren().add(hboxPlayerPerson);
@@ -345,171 +236,10 @@ public class Game {
         root.getChildren().add(hboxlabelComputer);
         root.getChildren().add(hboxCurrentResultsGame);
         root.getChildren().add(firstGroup);
-        root.getChildren().add(sceondGroup);
-
+        root.getChildren().add(secondGroup);
         root.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(25), Insets.EMPTY)));
-
         Scene scene = new Scene(root,1000,700);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public void endGame(int wonRounds) throws Exception{
-
-        helpStageEndGame.setOnCloseRequest(e -> Platform.exit());
-
-        helpStageEndGame.setResizable(false);
-
-        StackPane root = new StackPane();
-        Scene scene = new Scene(root,400,150);
-        root = hc.showWindowBtnYesNo(root);
-
-        Label labelAsk = new Label();
-        labelAsk.setText("Are you sure you want to end the game?");
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
-        labelAsk.setFont(font);
-        labelAsk.setTextFill(Color.RED);
-        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        Button btnYes = new Button();
-        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
-        ImageView imageViewIconYes = new ImageView(imageIconYes);
-        btnYes.setGraphic(imageViewIconYes);
-        imageViewIconYes.setFitHeight(50);
-        imageViewIconYes.setFitWidth(50);
-
-        Button btnNo = new Button();
-        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
-        ImageView imageViewIconNo = new ImageView(imageIconNo);
-        btnNo.setGraphic(imageViewIconNo);
-        imageViewIconNo.setFitHeight(50);
-        imageViewIconNo.setFitWidth(50);
-
-        HBox hBoxlabelAsk = new HBox(labelAsk);
-        HBox hBoxbtns = new HBox(btnYes, btnNo);
-        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 45));
-        hBoxbtns.setSpacing(50);
-        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
-
-        EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    helpStageEndGame.close();
-                    primaryStage.close();
-                    stage.close();
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-        btnYes.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerYes);
-
-        EventHandler<MouseEvent> eventHandlerNo = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    if( ( totalResultNumberOfRoundsHuman != wonRounds ) && ( totalResultNumberOfRoundsComputer != wonRounds ) ) {
-                        btnPaper.setDisable(false);
-                        btnRock.setDisable(false);
-                        btnScissors.setDisable(false);
-                    }
-                    btnPlayGame.setDisable(false);
-                    btnCloseWindowForm.setDisable(false);
-                    btnCloseWindowGame.setDisable(false);
-                    btnPlayGameAgain.setDisable(false);
-                    helpStageEndGame.close();
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-        btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
-
-        root.getChildren().add(hBoxlabelAsk);
-        root.getChildren().add(hBoxbtns);
-        helpStageEndGame.setScene(scene);
-        helpStageEndGame.show();
-    }
-
-    public void playGameAgain(int wonRounds) throws Exception{
-
-        helpStageGameAgain.setOnCloseRequest(e -> Platform.exit());
-
-        helpStageGameAgain.setResizable(false);
-
-        StackPane root = new StackPane();
-        Scene scene = new Scene(root,400,150);
-//        root.setBackground(new Background(new BackgroundFill(Color.BEIGE, new CornerRadii(25), Insets.EMPTY)));
-        root = hc.showWindowBtnYesNo(root);
-
-        Label labelAsk = new Label();
-        labelAsk.setText("Are you sure you want to end the current game?");
-        Font font = Font.font("Calibri", FontWeight.BOLD, FontPosture.ITALIC, 18);
-        labelAsk.setFont(font);
-        labelAsk.setTextFill(Color.RED);
-        labelAsk.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        Button btnYes = new Button();
-        Image imageIconYes = new Image(getClass().getResourceAsStream("icons/button-yes.png"));
-        ImageView imageViewIconYes = new ImageView(imageIconYes);
-        btnYes.setGraphic(imageViewIconYes);
-        imageViewIconYes.setFitHeight(50);
-        imageViewIconYes.setFitWidth(50);
-
-        Button btnNo = new Button();
-        Image imageIconNo = new Image(getClass().getResourceAsStream("icons/button-no.png"));
-        ImageView imageViewIconNo = new ImageView(imageIconNo);
-        btnNo.setGraphic(imageViewIconNo);
-        imageViewIconNo.setFitHeight(50);
-        imageViewIconNo.setFitWidth(50);
-
-        HBox hBoxlabelAsk = new HBox(labelAsk);
-        HBox hBoxbtns = new HBox(btnYes, btnNo);
-        hBoxlabelAsk.setPadding(new Insets(25, 0, 0, 15));
-        hBoxbtns.setSpacing(50);
-        hBoxbtns.setPadding(new Insets(75, 0, 0, 100));
-
-        EventHandler<MouseEvent> eventHandlerYes = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    btnCloseWindowGame.setDisable(false);
-                    btnPlayGameAgain.setDisable(false);
-                    helpStageGameAgain.close();
-                    primaryStage.close();
-                    Main m = new Main();
-                    m.start(new Stage());
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-        btnYes.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerYes);
-
-        EventHandler<MouseEvent> eventHandlerNo = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                try {
-                    if( ( totalResultNumberOfRoundsHuman != wonRounds ) && ( totalResultNumberOfRoundsComputer != wonRounds ) ) {
-                        btnPaper.setDisable(false);
-                        btnRock.setDisable(false);
-                        btnScissors.setDisable(false);
-                    }
-                    btnCloseWindowGame.setDisable(false);
-                    btnPlayGameAgain.setDisable(false);
-                    helpStageGameAgain.close();
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-        btnNo.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandlerNo);
-
-        root.getChildren().add(hBoxlabelAsk);
-        root.getChildren().add(hBoxbtns);
-        helpStageGameAgain.setScene(scene);
-        helpStageGameAgain.show();
+        primaryStage = hc.setStage(scene, primaryStage);
     }
 
     public void displayResults(String user, int wonRounds, int resultPlayerHuman, int resultPlayerComputer) {
@@ -518,26 +248,24 @@ public class Game {
         } else if( resultPlayerComputer==1 ) {
             totalResultNumberOfRoundsComputer += 1;
         }
-
         if( totalResultNumberOfRoundsHuman == wonRounds ) {
             currentResultsGame.setText("Limit won rounds: " + wonRounds +
-                                        "\nGame win "+user+"!\n" + user + " -> " + totalResultNumberOfRoundsHuman +
-                                                        "   " + "Computer -> " + totalResultNumberOfRoundsComputer);
+                                        "\nGame won \""+user+"\"!\n\"" + user + "\"->" + totalResultNumberOfRoundsHuman +
+                                                        " " + "Computer->" + totalResultNumberOfRoundsComputer);
             btnPaper.setDisable(true);
             btnRock.setDisable(true);
             btnScissors.setDisable(true);
         } else if( totalResultNumberOfRoundsComputer == wonRounds ) {
             currentResultsGame.setText("Limit won rounds: " + wonRounds +
-                                        "\nGame win Computer!\n" + user + " -> " + totalResultNumberOfRoundsHuman +
-                                                        "   " + "Computer -> " + totalResultNumberOfRoundsComputer);
+                                        "\nGame won Computer!\n\"" + user + "\"->" + totalResultNumberOfRoundsHuman +
+                                                        " " + "Computer->" + totalResultNumberOfRoundsComputer);
             btnPaper.setDisable(true);
             btnRock.setDisable(true);
             btnScissors.setDisable(true);
         } else {
             currentResultsGame.setText("Limit won rounds: " + wonRounds +
-                                        "\nCurrent result game:\n" + user + " -> " + totalResultNumberOfRoundsHuman +
-                                                            "   " + "Computer -> " + totalResultNumberOfRoundsComputer);
+                                        "\nCurrent result game:\n\"" + user + "\"->" + totalResultNumberOfRoundsHuman +
+                                                            " " + "Computer->" + totalResultNumberOfRoundsComputer);
         }
     }
-
 }
