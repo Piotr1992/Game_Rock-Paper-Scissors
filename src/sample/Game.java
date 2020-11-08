@@ -18,8 +18,6 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-//      Main class
-
 public class Game {
     private Stage primaryStage = new Stage();
     private HelpClass hc = new HelpClass();
